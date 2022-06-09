@@ -1,0 +1,243 @@
+{% extends 'base_results.html' %}
+
+{% block title %} Site N° {{ site }} {% endblock %}
+
+{% block navbar %}
+<li>
+  <a href="{% url 'results' id_enseigne %}">
+    <i class="nc-icon nc-chart-bar-32"></i>
+    <p>Photovoltaïque</p>
+  </a>
+</li>
+<li class="active">
+  <a href="{% url 'mde' id_enseigne %}">
+    <i class="nc-icon nc-bulb-63"></i>
+    <p>Maîtrise de l'énergie</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'mobi' id_enseigne %}">
+    <i class="nc-icon nc-pin-3"></i>
+    <p> Mobilité</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'factu' id_enseigne%}">
+    <i class="nc-icon nc-credit-card"></i>
+    <p> Devis</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'bilan' id_enseigne %}">
+    <i class="nc-icon nc-tag-content"></i>
+    <p> Bilan</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'pdftest' id_enseigne 'rapport_pdf.html' 0 %}">
+    <i class="nc-icon nc-send"></i>
+    <p> Rapport complet</p>
+  </a>
+</li>
+{% endblock navbar %}
+
+{% block content %}
+{% load humanize %}
+<!-- End Navbar -->
+<div class="content">
+  <form action="" method="POST" name="formA">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6 ">
+        <label>N° de site </label>
+        <div class="form-group">
+
+          <select class="form-control" name="site">
+
+            {% for i in nb %}
+
+            <option>
+              {{ forloop.counter }}
+            </option>
+
+            {% endfor %}
+          </select>
+
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Site' value='Site' />
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Revenir au questionnaire' />
+      </div>
+  </form>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title"> Economies envisagées</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class=" text-primary">
+              <th>
+                Type d'économies
+              </th>
+              <th>
+                Sur 1 an
+              </th>
+              <th>
+                Sur 10 ans
+              </th>
+              <th>
+                Sur 20 ans
+              </th>
+            </thead>
+            <tbody>
+              <tr>
+                <td class=" text-primary">
+                  Economique
+                </td>
+                {% for f in bilan1 %}
+                <td>
+                  {{f|intcomma}} €
+                </td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class=" text-primary">
+                  Energétique
+                </td>
+                {% for f in bilan2 %}
+                <td>
+                  {{f|intcomma}} kWh
+                </td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class=" text-primary">
+                  Environnemental
+                </td>
+                {% for f in bilan3 %}
+                <td>
+                  {{f|intcomma}} CO<sub>2</sub>
+                </td>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card ">
+      <div class="card-header ">
+        <h5 class="card-title">Consommation annuelle d'électricité</h5>
+      </div>
+      <div class="card-body ">
+        <canvas id="bar-chart" width="300" height="100"></canvas>
+        <script>
+
+          new Chart(document.getElementById("bar-chart"), {
+            type: 'bar',
+            data: {
+              labels: ['Année 1', 'Année 2', 'Année 3', 'Année 4', 'Année 5', 'Année 6', 'Année 7', 'Année 8', 'Année 9', 'Année 10',
+                'Année 11', 'Année 12', 'Année 13', 'Année 14', 'Année 15', 'Année 16', 'Année 17', 'Année 18', 'Année 19', 'Année 20'],
+              datasets: [{
+                data: {{ courbe1 }},
+            label: "Ancienne consommation",
+            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)',
+              'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)',
+              'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)',
+              'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)',
+              'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)',
+              'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+            borderColor: ['rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)'
+              , 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)'],
+            borderWidth: 1
+          }, {
+            data: {{ courbe2 }},
+            label: "Consommation réduite",
+            backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)',
+            'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)',
+            'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)',
+            'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)',
+            'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)',
+            'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)',
+            'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)'],
+            borderWidth: 1
+                             },
+                            ]
+                          },
+            options: {
+            plugins: {
+              filler: {
+                propagate: true,
+              }
+            },
+            title: {
+              display: false,
+              text: "Consommation d'électricité anuelle"
+            }
+          }
+                        });
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card ">
+      <div class="card-header ">
+        <h5 class="card-title">Emissions CO<sub>2</sub> des bâtiments</h5>
+      </div>
+      <div class="card-body ">
+        <canvas id="bar2-chart" width="300" height="100"></canvas>
+        <script>
+
+          new Chart(document.getElementById("bar2-chart"), {
+            type: 'bar',
+            data: {
+              labels: ['Année 1', 'Année 10', 'Année 20'],
+              datasets: [{
+                data: {{ emissions_avant }},
+            label: "Sans action",
+            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+            borderColor: ['rgba(255,99,132,1)', 'rgba(255,99,132,1)', 'rgba(255,99,132,1)'],
+            borderWidth: 1
+          }, {
+            data: {{ emission_apres }},
+            label: "Avec MDE ",
+            backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)', 'rgba(75, 192, 192, 1)'],
+            borderWidth: 1
+                             },
+                            ]
+                          },
+            options: {
+            plugins: {
+              filler: {
+                propagate: true,
+              }
+            },
+            title: {
+              display: false,
+              text: "Emissions CO2 des bâtiments"
+            }
+          }
+                        });
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

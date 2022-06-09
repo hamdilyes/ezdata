@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{module1}}</title>
+</head>
+<body>
+  {% for i in module%}
+
+    {% for f in i.get_all_fields %}
+  <dt>{{f.label|capfirst}}</dt>
+    <dd>
+      {{f.value|escape|urlize|linebreaks}}
+    </dd>
+    {% endfor %}
+  {% endfor %}
+</body>
+</html>

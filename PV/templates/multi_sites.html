@@ -1,0 +1,606 @@
+{% extends 'base_results.html' %}
+
+{% block title %} Bilan des économies envisagées - Multi-sites {% endblock %}
+
+{% block navbar %}
+<li>
+    <a href="{% url 'results' id_enseigne %}">
+        <i class="nc-icon nc-chart-bar-32"></i>
+        <p>Photovoltaïque</p>
+    </a>
+</li>
+<li>
+    <a href="{% url 'mde' id_enseigne %}">
+        <i class="nc-icon nc-bulb-63"></i>
+        <p>Maîtrise de l'énergie</p>
+    </a>
+</li>
+<li>
+    <a href="{% url 'mobi' id_enseigne %}">
+        <i class="nc-icon nc-pin-3"></i>
+        <p> Mobilité</p>
+    </a>
+</li>
+<li>
+    <a href="{% url 'factu' id_enseigne%}">
+        <i class="nc-icon nc-credit-card"></i>
+        <p> Devis</p>
+    </a>
+</li>
+<li class="active">
+    <a href="{% url 'bilan' id_enseigne %}">
+        <i class="nc-icon nc-tag-content"></i>
+        <p> Bilan</p>
+    </a>
+</li>
+<li>
+    <a href="{% url 'pdftest' id_enseigne 'rapport_pdf.html' 0 %}">
+        <i class="nc-icon nc-send"></i>
+        <p> Rapport complet</p>
+    </a>
+</li>
+{% endblock navbar %}
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<div class="content">
+    <form action="" method="POST" name="formA">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent'
+                    value='Revenir au questionnaire' />
+            </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-6 col-md-3">
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <img src=" {% static 'PV/img/euros.png' %}">
+                        <center>
+                            <p><B>€ / an</B></p>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <img src=" {% static 'PV/img/enviro.png' %}">
+                        <center>
+                            <p><B>kg CO<sub>2</sub> / an</B></p>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <img src=" {% static 'PV/img/conso.png' %}">
+                        <center>
+                            <p><B>MWh / an</B></p>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <img src=" {% static 'PV/img/mde1.png' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <br>
+                        <font size="4"><strong>{{ un|intcomma }}</strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="text-align:center col-md-auto">
+                        <br>
+                        <font size="4"><strong>{{ cinq|intcomma }} </strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="text-align:center col-md-auto">
+                        <br>
+                        <font size="4"><strong>{{ neuf|intcomma }} </strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <img src=" {% static 'PV/img/pv.png' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <br>
+                        <font size="4"><strong>{{ deux|intcomma }} </strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="text-align:center col-md-auto">
+                        <br>
+                        <font size="4"><strong>{{ six|intcomma }} </strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="text-align:center col-md-auto">
+                        <br>
+                        <font size="4"><strong>---</strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <img src=" {% static 'PV/img/mobi1.png' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <br>
+                        <font size="4"><strong>{{ trois|intcomma }} </strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="text-align:center col-md-auto">
+                        <br>
+                        <font size="4"><strong>{{ sept|intcomma }} </strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="text-align:center col-md-auto">
+                        <br>
+                        <font size="4"><strong> {{ dix|intcomma }} </strong></font><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <img src=" {% static 'PV/img/total.png' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <br><br>
+                        <font size="4" style="color:olive"><strong>{{ quatre|intcomma }} <small>€ / an</small></strong>
+                        </font>
+                        <br><br><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <br><br>
+                        <font size="4" style="color:olive"><strong>{{ huit|intcomma }} <small>kg
+                                    CO<sub>2</sub> / an</small></strong>
+                        </font>
+                        <br><br><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <br><br>
+                        <font size="4" style="color:olive"><strong>{{ onze|intcomma }} <small>MWh / an</small></strong>
+                        </font>
+                        <br><br><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">Emissions de CO<sub>2</sub> sur 20 ans</h5>
+            </div>
+            <div class="card-body ">
+                <canvas id="pie-chart" width="400" height="100"></canvas>
+                <script>
+
+                    new Chart(document.getElementById("pie-chart"), {
+                        type: 'pie',
+                        data: {
+                            labels: ["Réduction grâce à la MDE", "Réduction grâce au PV", "Réduction grâce à la Mobilité", "Emissions au bout de 20 ans"],
+                            datasets: [{
+                                label: "Emissions de CO<sub>2</sub> sur 20 ans",
+                                backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                                data: [{{ Reduction_MDE| safe }},{{ Reduction_PV| safe }}, {{ Reduction_Mobilite| safe }}, {{ Emission_20ans| safe }}]
+                      }]
+                    },
+                        options: {
+                        title: {
+                            display: false,
+                            text: 'Emissions de CO2 sur 20 ans'
+                        }
+                    }
+                });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-bulb-63 text-secondary"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category">Evitées - MDE</p>
+                            <p class="card-title"><small>{{ Reduction_MDE }} %</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-chart-bar-32 text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category">Evitées - PV</p>
+                            <p class="card-title"><small>{{ Reduction_PV }} %</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-pin-3 text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category"><small>Evitées - Mobilité</small></p>
+                            <p class="card-title"><small>{{ Reduction_Mobilite }} %</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-5 col-md-4">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="nc-icon nc-layout-11 text-success"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                        <div class="numbers">
+                            <p class="card-category">Emissions</p>
+                            <p class="card-title"><small>{{ Emission_20ans }} %</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-6 mr-auto ml-auto">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">Avant - moyenne annuelle sur 20 ans</h5>
+            </div>
+            <div class="card-body ">
+
+                <div class="row">
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <img src=" {% static 'PV/img/euros.png' %}">
+                                        <center>
+                                            <p><B>€ / an</B></p>
+                                            <p><B>{{ eco_avant }}</B></p>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <img src=" {% static 'PV/img/enviro.png' %}">
+                                        <center>
+                                            <p><B>kg CO<sub>2</sub> / an</B></p>
+                                            <p><B>{{ env_avant }}</B></p>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <img src=" {% static 'PV/img/conso.png' %}">
+                                        <center>
+                                            <p><B>MWh / an</B></p>
+                                            <p><B>{{ cons_avant }}</B></p>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mr-auto ml-auto">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">Après - moyenne annuelle sur 20 ans</h5>
+            </div>
+            <div class="card-body ">
+
+                <div class="row">
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <img src=" {% static 'PV/img/euros.png' %}">
+                                        <center>
+                                            <p><B>€ / an</B></p>
+                                            <p><B>{{ eco_apres }}</B></p>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <img src=" {% static 'PV/img/enviro.png' %}">
+                                        <center>
+                                            <p><B>kg CO<sub>2</sub> / an</B></p>
+                                            <p><B>{{ env_apres }}</B></p>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <img src=" {% static 'PV/img/conso.png' %}">
+                                        <center>
+                                            <p><B>MWh / an</B></p>
+                                            <p><B>{{ cons_apres }}</B></p>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">% d'économies</h5>
+            </div>
+            <div class="card-body ">
+
+                <div class="row">
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <center>
+                                            <img src=" {% static 'PV/img/euros.png' %}">
+                                            <h5>Economique</h5>
+                                            <h3>{{ eco_p }} %</h3>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <center>
+                                            <img src=" {% static 'PV/img/enviro.png' %}">
+                                            <h5>Environnemental</h5>
+                                            <h3>{{ env_p }} %</h3>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mr-auto ml-auto">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-auto">
+                                        <center>
+                                            <img src=" {% static 'PV/img/conso.png' %}">
+                                            <h5>Energétique</h5>
+                                            <h3>{{ cons_p }} %</h3>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

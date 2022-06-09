@@ -1,0 +1,609 @@
+<head>
+    <table>
+        <h1 style="font-size:20px"> Préconfiguration <small>by Green Technologie</small>
+        </h1>
+        <a>
+            <img class="mb-2 w-100 p-2" src="/static/admin/assets/img/logo_gt.png" alt="Logo">
+        </a>
+        <style>
+            table td {
+                text-align: center;
+            }
+
+            table.center {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            @media print {
+                .pagebreak {
+                    clear: both;
+                    page-break-after: always;
+                }
+            }
+        </style>
+        <script>
+            var today = new Date();
+            var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+            var time = today.getHours() + ":" + today.getMinutes();
+            document.getElementById("date").innerHTML = date;
+            document.getElementById("time").innerHTML = time;
+        </script>
+
+</head>
+
+<body>
+    <hr>
+    <div class="row">
+        <table>
+            <thead>
+                <th>
+                    <h1> </h1>
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <h1> </h1>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <table>
+            <thead>
+                <th>
+                    <h1>
+                        Nombre de sites
+                    </h1>
+                </th>
+                <th>
+                    <h1>
+                        Etude
+                    </h1>
+                </th>
+                <th>
+                    <h1>
+                        Entité
+                    </h1>
+                </th>
+                <th>
+                    <h1>
+                        Contact
+                    </h1>
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align:center">
+                        <h3>{{ nb_sites }}</h3>
+                    </td>
+                    <td style="text-align:center">
+                        <h3>{{ name }}</h3>
+                    </td>
+                    <td style="text-align:center">
+                        <h3>{{ nom_entreprise }}</h3>
+                    </td>
+                    <td style="text-align:center">
+                        <h3> {{ mail }}</h3>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <h1>
+            Bilan - Multi-sites
+        </h1>
+        <table>
+            <thead>
+                <th>
+
+                </th>
+                <th>
+                    <h1>Economique</h1>
+                </th>
+                <th>
+                    <h1>Environnemental</h1>
+                </th>
+                <th>
+                    <h1>Energétique</h1>
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td>
+                        <h2>€ / an</h2>
+                    </td>
+                    <td>
+                        <h2>kg CO<sub>2</sub> / an</h2>
+                    </td>
+                    <td>
+                        <h2>MWh/an</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>MDE</h1>
+                    </td>
+                    <td>
+                        <p>{{ un_multi }}</p>
+                    </td>
+                    <td>
+                        <p>{{ cinq_multi }}</p>
+                    </td>
+                    <td>
+                        <p>{{ neuf_multi }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>PV</h1>
+                    </td>
+                    <td>
+                        <p>{{ deux_multi }}</p>
+                    </td>
+                    <td>
+                        <p>{{ six_multi }}</p>
+                    </td>
+                    <td>
+                        <p>{{ dix_multi }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>IRVE</h1>
+                    </td>
+                    <td>
+                        <p>{{ trois_multi }}</p>
+                    </td>
+                    <td>
+                        <p>{{ sept_multi }}</p>
+                    </td>
+                    <td>
+                        <p>--</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>Total</h1>
+                    </td>
+                    <td>
+                        <h2>{{ quatre_multi }} € / an</h2>
+                    </td>
+                    <td>
+                        <h2>{{ huit_multi }} kg CO<sub>2</sub> / an</h2>
+                    </td>
+                    <td>
+                        <h2>{{ onze_multi }} MWh/an</h2>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagebreak"> </div>
+
+    {% for site in nb %}
+    <hr>
+
+    <div class="row">
+        <h1>
+            Bilan Site N° {{ site }}
+        </h1>
+        <table>
+            <thead>
+                <th>
+
+                </th>
+                <th>
+                    <h1>Economique</h1>
+                </th>
+                <th>
+                    <h1>Environnemental</h1>
+                </th>
+                <th>
+                    <h1>Energétique</h1>
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td>
+                        <h2>€ / an</h2>
+                    </td>
+                    <td>
+                        <h2>kg CO<sub>2</sub> / an</h2>
+                    </td>
+                    <td>
+                        <h2>MWh/an</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>MDE</h1>
+                    </td>
+                    <td>
+                        <p>{{ un|get_item:site }}</p>
+                    </td>
+                    <td>
+                        <p>{{ cinq|get_item:site }}</p>
+                    </td>
+                    <td>
+                        <p>{{ neuf|get_item:site }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>PV</h1>
+                    </td>
+                    <td>
+                        <p>{{ deux|get_item:site }}</p>
+                    </td>
+                    <td>
+                        <p>{{ six|get_item:site }}</p>
+                    </td>
+                    <td>
+                        <p>{{ dix|get_item:site }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>IRVE</h1>
+                    </td>
+                    <td>
+                        <p>{{ trois|get_item:site }}</p>
+                    </td>
+                    <td>
+                        <p>{{ sept|get_item:site }}</p>
+                    </td>
+                    <td>
+                        <p>---</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>Total</h1>
+                    </td>
+                    <td>
+                        <h2>{{ quatre|get_item:site }} € / an</h2>
+                    </td>
+                    <td>
+                        <h2>{{ huit|get_item:site }} kg CO<sub>2</sub> / an</h2>
+                    </td>
+                    <td>
+                        <h2>{{ onze|get_item:site }} MWh/an</h2>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div class="row">
+        <h1>
+            Centrale photovoltaïque - Autoconsommation sans stockage
+        </h1>
+        <hr>
+        <div class="table">
+            <table>
+
+                <thead>
+                    <th>
+                        <h1 class="card-category">Taille</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">Modules</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">Surface</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">N° solution</h1>
+                    </th>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ taille|get_item:site }} kWc</h3>
+                        </td>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ nb_modules|get_item:site }}</h3>
+                        </td>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ surface|get_item:site }} m²</h3>
+                        </td>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ n|get_item:site }}</h3>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <table>
+            <thead>
+                <th>
+                    <h1 class="card-body">Autoconsommation</h1>
+                </th>
+                <th>
+                    <h1 class="card-body">Autoproduction</h1>
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align:center">
+                        <h2 class="card-title">{{ autoconso|get_item:site }} %</h2>
+                    </td>
+                    <td style="text-align:center">
+                        <h2 class="card-title">{{ autoprod|get_item:site }} %</h2>
+                    </td>
+                </tr>
+
+                <tr>
+
+                </tr>
+                <tr>
+                    <td style="text-align:center">
+                        <p class="card-body"><B>Consommer l'électricité produite. </B></p>
+                    </td>
+                    <td style="text-align:center">
+                        <p class="card-body"><B>Produire l'électricité consommée. </B> </p>
+                    </td>
+                </tr>
+                <tr>
+
+                </tr>
+                <tr>
+                    <td style="text-align:center">
+                        <p class="card-body"> Vous consommez directement <B> {{ autoconso|get_item:site }} % </B> de
+                            l'électricité
+                            que
+                            produit
+                            la
+                            centrale photovoltaïque sur une année.</p>
+                    </td>
+                    <td style="text-align:center">
+                        <p class="card-body">La centrale photovoltaïque produit <B>{{ autoprod|get_item:site }} %</B> de
+                            votre
+                            consommation
+                            annuelle d'électricité.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div class="row">
+        <h1> Devis</h1>
+        <div class="col-sm-12">
+            <div class="col-sm-6">
+                <div class="col-sm-6">
+                    <p class="col-sm-6">Ce devis est estimatif. Il est susceptible d'évoluer selon les travaux
+                        effectués
+                        sur
+                        place.
+                    </p>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="table">
+                        <table class="table">
+                            <thead class="text-primary">
+                                <th>
+                                    Module
+                                </th>
+                                <th>
+                                    Quantité
+                                </th>
+                                <th>
+                                    Coût HA unit
+                                </th>
+                                <th>
+                                    Coût unit Transport
+                                </th>
+                                <!-- <th>
+                Prix Unitaire Prédéfini
+              </th> -->
+                                <th>
+                                    Coût HA
+                                </th>
+                                <th>
+                                    Coût Transport
+                                </th>
+                                <th>
+                                    Marge
+                                </th>
+                                <th>
+                                    Prix
+                                </th>
+                                <th>
+                                    Prix unit
+                                </th>
+                            </thead>
+                            <tbody>
+                                {% for i in module|get_item:site %}
+                                <tr>
+                                    {% for f in i.fields %}
+                                    <td>
+                                        {{ f }}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="table">
+            <table>
+                <thead>
+
+                    <th>
+                        <h1 class="card-category">Coût HA </h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">Coût Transport</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">Marge</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">Prix</h1>
+                    </th>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+                        <td style="text-align:center">
+                            <p class="card-title" style="font-size: 24px">{{ totalHA|get_item:site }} €</p>
+                        </td>
+                        <td style="text-align:center">
+                            <p class="card-title" style="font-size: 24px">{{ totalTransport|get_item:site }} €</p>
+                        </td>
+                        <td style="text-align:center">
+                            <p class="card-title" style="font-size: 24px">{{ totalMarge|get_item:site }} €</p>
+                        </td>
+                        <td style="text-align:center">
+                            <p class="card-title" style="font-size: 24px">{{ totalPrix|get_item:site }} €</p>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <h1>
+            Maîtrise de l'énergie
+        </h1>
+        <hr>
+        <table>
+            <thead>
+                <th>
+                    Type d'économies
+                </th>
+                <th>
+                    Sur 1 an
+                </th>
+                <th>
+                    Sur 10 ans
+                </th>
+                <th>
+                    Sur 20 ans
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Economique
+                    </td>
+                    {% for f in bilan1|get_item:site %}
+                    <td>
+                        {{ f }} €
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>
+                        Energétique
+                    </td>
+                    {% for f in bilan2|get_item:site %}
+                    <td>
+                        {{ f }} kWh
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>
+                        Environnemental
+                    </td>
+                    {% for f in bilan3|get_item:site %}
+                    <td>
+                        {{ f }} CO<sub>2</sub>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <h1>
+            Mobilité
+        </h1>
+        <hr>
+        <table>
+            <thead>
+                <th>
+                    Type d'économies
+                </th>
+                <th>
+                    Sur 1 an
+                </th>
+                <th>
+                    Sur 10 ans
+                </th>
+                <th>
+                    Sur 20 ans
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Economique
+                    </td>
+                    {% for f in bilan1_mobilite|get_item:site %}
+                    <td>
+                        {{ f }} €
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>
+                        Environnemental
+                    </td>
+                    {% for f in bilan3_mobilite|get_item:site %}
+                    <td>
+                        {{ f }} CO<sub>2</sub>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagebreak"> </div>
+
+    {% endfor %}
+
+</body>

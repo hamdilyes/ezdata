@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+<head>
+    <script>
+        {% if messages %}
+        {% for message in messages %}
+        alert('{{message}}')
+        {% endfor %}
+        {% endif %}
+    </script>
+</head>
+
+{% block content %}
+<!--        You can switch " data-color="orange" "  with one of the next bright colors: "blue", "green", "orange", "red", "azure"          -->
+
+<div class="wizard-navigation">
+    <div class="progress-with-circle">
+        <div class="progress-bar" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="100"
+            style="width: 100%;"></div>
+    </div>
+    <ul>
+        <li class="active">
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-user"></i>
+                </div>
+                Projet
+            </a>
+        </li>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-home"></i>
+                </div>
+                Site
+            </a>
+        </li>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-shine"></i>
+                </div>
+                Préconfiguration
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="tab-content">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="tab-pane">
+            <div class="row">
+                <h5 class="info-text"> Bienvenue {{ nom_entreprise }} !</h5>
+                <p class="category"> Vous êtes sur le point de créer un Projet qui pourra accueillir plusieurs sites /
+                    études. </p>
+
+                <hr class="divider">
+
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formP.name.errors %}has-warning has-feedback{% endif %}">
+                        <label>Projet </label>
+                        {{ formP.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wizard-footer">
+            <div class="pull-right">
+                <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='next' value='Enregistrer' />
+            </div>
+            <!-- <div class="pull-left">
+                <input type='submit' class='btn btn-default btn-wd' name='Précédent' value='Retour' />
+            </div> -->
+
+            <div class="clearfix"></div>
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}

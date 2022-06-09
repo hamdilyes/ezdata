@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+
+
+<head>
+    <script>
+        {% if messages %}
+        {% for message in messages %}
+        alert('{{message}}')
+        {% endfor %}
+        {% endif %}
+    </script>
+</head>
+
+
+
+
+{% block content %}
+
+
+<!--        You can switch " data-color="orange" "  with one of the next bright colors: "blue", "green", "orange", "red", "azure"          -->
+
+<div class="wizard-navigation">
+    <div class="progress-with-circle">
+        <div class="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="2" aria-valuemax="3"
+            style="width: 21%;"></div>
+    </div>
+    <ul>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-user"></i>
+                </div>
+                Informations génerales
+            </a>
+        </li>
+        <li class="active">
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-home"></i>
+                </div>
+                Bâtiments
+            </a>
+        </li>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-shine"></i>
+                </div>
+                Énergie
+
+            </a>
+        </li>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-car"></i>
+                </div>
+                Mobilité
+
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+<div class="tab-content">
+
+    <div class="row">
+        <h5 class="info-text"> Informations sur un bâtiment type</h5>
+        <p class="category">Chaque site contient un nombre de bâtiments considérés comme identiques</p>
+        {% if not etat_form %}
+        {% if not etat_next %}
+        <p class="category">Merci de confirmer les informations de tous les sites avant de pouvoir
+            continuer. </p>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    <hr class="divider">
+    <div class="row">
+        <form action="" method="POST" name="formA">
+            {% if not etat_form %}
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-1">
+                    <label>N° de site</label>
+                    <div class="form-group">
+
+                        <select class="form-control" name="site">
+
+                            {% for i in nb %}
+
+                            <option>
+                                {{ forloop.counter }}
+                            </option>
+
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-offset-7">
+                    <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Site' value='Choix du site' />
+                    {% if etat_next %}
+                    <input type='submit' class='btn btn-next btn-fill btn-sucess btn-wd' name='Next' value='Suivant' />
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-1 col-sm-offset-1">
+                <div class="pull-left">
+                    <input type='submit' class='btn btn-default btn-wd' name='Précédent' value='Précédent' />
+                </div>
+            </div>
+            {% endif %}
+        </form>
+
+
+
+
+
+        {% if etat_form %}
+
+        <form action="" method="POST" name="formB">
+            {% csrf_token %}
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group">
+                    <label>N° de site </label>
+                    <div class="form-control">
+                        {{ site }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formC.territ.errors %}has-warning has-feedback{% endif %}">
+                    <label>Adresse </label>
+                    {{ formC.adresse }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formC.territ.errors %}has-warning has-feedback{% endif %}">
+                    <label>Territoire </label>
+                    {{ formC.territ }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formG.type_batiment.errors %}has-warning has-feedback{% endif %}">
+                    <label>Type de bâtiment </label>
+                    {{ formG.type_batiment }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formE.type_profil.errors %}has-warning has-feedback{% endif %}">
+                    <label>Type de profil </label>
+                    {{ formE.type_profil }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formG.taille.errors %}has-warning has-feedback{% endif %}">
+                    <label>Taille du bâtiment </label>
+                    {{ formG.taille }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formG.taille.errors %}has-warning has-feedback{% endif %}">
+                    <label>Nombre d'étages </label>
+                    {{ formG.nb_etages }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formF.toiture.errors %}has-warning has-feedback{% endif %}">
+                    <label>Type de toiture </label>
+                    {{ formF.toiture }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formF.toiture.errors %}has-warning has-feedback{% endif %}">
+                    <label>Surface de toiture (m²) </label>
+                    {{ formF.surface }}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group {% if formG.nb_batiment.errors %}has-warning has-feedback{% endif %}">
+                    <label>Nombre de bâtiments </label>
+                    {{ formG.nb_batiment }}
+                </div>
+            </div>
+    </div>
+</div>
+
+
+<div class="wizard-footer">
+    <div class="pull-right">
+        <input type='submit' class='btn btn-default btn-wd' name='Enregistrer' value='Enregistrer' />
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+</form>
+</div>
+
+{% endif %}
+
+
+
+
+
+
+{% endblock %}
+
+<script>
+    $(function () {
+        $('.tab-pane ul li.active').removeClass('active');
+
+        $('.nav-pills a[href="#batiments"]').tab('show'); // Select tab by name
+    })
+
+
+</script>

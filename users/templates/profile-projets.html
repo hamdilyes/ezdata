@@ -1,0 +1,105 @@
+{% extends 'users/templates/base.html' %}
+
+{% block content %}
+
+<!-- Masthead-->
+<header class="masthead">
+    <div class="container px-4 px-lg-5 h-100">
+
+        <div class="row">
+            <div class="col-md-2 offset-2 mr-auto ml-auto">
+                <div class="card">
+                    <div class="card-header ">
+                        <center>
+                            <p class="card-title"><small>Projets | Sites</small></p>
+                        </center>
+                    </div>
+                    <div class="card-body ">
+                        <center>
+                            <p>{{ nb_projets }} | {{ nb_sites }} </p>
+                        </center>
+                    </div>
+                    <div class="card-footer">
+                        <center>
+                            <a class="text-info text-gradient font-weight-bold" href="{% url 'addproject' %}">Ajouter
+                                Projet</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mr-auto ml-auto">
+                <div class="card">
+                    <div class="card-header ">
+                        <center>
+                            <h5 class="card-title">{{ nom_entreprise }}</h5>
+                        </center>
+                    </div>
+                    <div class="card-body ">
+                        <center>
+                            <p><small>{{ email }}</small></p>
+                        </center>
+                    </div>
+                    <div class="card-footer">
+                        <center>
+                            <a style="text-align:center" href="{% url 'updateuser' %}">Mettre à jour</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 mr-auto ml-auto">
+                <div class="card ">
+                    <div class="card-header ">
+                        <center>
+                            <p class="card-title"><small>Sites seuls</small></p>
+                        </center>
+                    </div>
+                    <div class="card-body ">
+                        <center>
+                            <p> {{ projet_defaut.nb_enseignes }} |
+                                <a style="text-align:center" href="{% url 'profile' projet_defaut.id %}">Afficher</a>
+                            </p>
+                        </center>
+                    </div>
+                    <div class="card-footer">
+                        <center>
+                            <a class="text-info text-gradient font-weight-bold" href="{% url 'clients' %}">Ajouter
+                                Site</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider">
+        <div class="row">
+            <div class="wrapper4">
+                {% for e in projets %}
+                <div class="card">
+                    <div class="card-header">
+                        <center>
+                            <a class="text-info text-gradient font-weight-bold" href="{% url 'profile' e.id %}">
+                                <h6>{{ e.name }}</h6>
+                            </a>
+                        </center>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- <p style="text-align:left"><small>ID : {{ e.id }}</small></p> -->
+                        <p style="text-align:center"></small>Sites : {{ e.nb_enseignes }}</small></p>
+                    </div>
+
+                    <!-- <div class="card card-footer">
+
+                        <a style="text-align:center" href="{% url 'profile' e.id %}">Résultats</a>
+
+                    </div> -->
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</header>
+
+{% endblock content %}

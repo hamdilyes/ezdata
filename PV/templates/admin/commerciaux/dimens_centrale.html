@@ -1,0 +1,738 @@
+{% extends "admin/base.html" %}
+
+{% block title %} Taille Centrale {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% load static %}
+
+{% block stylesheets %}
+<link href=" {% static 'admin/assets/css/range.css' %}" rel="stylesheet" />
+{% endblock stylesheets %}
+
+{% block body_class %} g-sidenav-show bg-gray-100 {% endblock body_class %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+  <div class="row align-items-center">
+    <div class="col-lg-4 col-sm-8">
+      <div class="nav-wrapper position-relative end-0">
+        <ul class="nav nav-pills nav-fill p-2" role="tablist">
+          <li class="nav-item">
+            <div class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" role="tab" aria-selected="true">
+              <a href="{% url 'admin:PV_client_change' id_client %}"> Général</a>
+            </div>
+          </li>
+          <li class="nav-item active">
+            <div class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" role="tab" aria-selected="true">
+              <a href="{% url 'dimens-centrale' id_client %}"> Centrale</a>
+            </div>
+          </li>
+          <li class="nav-item active">
+            <div class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" role="tab" aria-selected="true">
+              <a href="{% url 'devis' id_client standard_centrale standard_batterie %}"> Devis</a>
+            </div>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="/account-security.html" role="tab"
+              aria-selected="false">
+              Rapport PDF
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid py-4">
+  {% load static %}
+  <div class=" main-panel">
+    <form action="" method="POST" name="formA">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6 ">
+          <label>N° de site </label>
+          <div class="form-group">
+
+            <select class="form-control" name="site">
+
+              {% for i in nb %}
+
+              <option>
+                {{ forloop.counter }}
+              </option>
+
+              {% endfor %}
+            </select>
+
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Site' value='Site' />
+        </div>
+
+        <!-- <div class="col-lg-3 col-md-12 col-sm-12">
+          <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Submit' value='Devis' />
+        </div> -->
+
+    </form>
+  </div>
+  <form action="" method="post">
+    {% csrf_token %}
+
+    <div class="horizontal dark my-5">
+      <div class="row">
+        <div class="col-lg-2 col-sm-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex mb-4">
+                <div class="form-check form-switch ms-auto">
+                  <input class="form-check-input" name="Auto_Prod" type="checkbox" id="Auto_Prod" {% if etat_AutoProd %}
+                    checked {% endif %} value='{{form.Auto_Prod}}'>
+
+                </div>
+              </div>
+
+              <img src=" {% static 'admin/assets/img/autoprod.png' %}">
+              <p class="mt-4 mb-0 font-weight-bold">Auto Production</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-sm-6 mt-md-0 mt-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex mb-3">
+                <div class="form-check form-switch ms-auto">
+                  <input class="form-check-input" name="Auto_Conso" id="Auto_Conso" type="checkbox"
+                    value='{{form.Auto_Conso}}'>
+
+                </div>
+              </div>
+              <img src=" {% static 'admin/assets/img/autoconso.png' %}">
+              <p class="mt-2 mb-0 font-weight-bold ">Auto Consommation</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-sm-6 mt-lg-0 mt-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex mb-4">
+                <div class="form-check form-switch ms-auto">
+                  <input class="form-check-input" name='Entre_les_deux' type="checkbox" id="Entre_Deux"
+                    value='{{form.Entre_les_deux}}'>
+
+                </div>
+              </div>
+              <img src=" {% static 'admin/assets/img/entrelesdeux.jpg' %}">
+
+              <p class="mt-4 mb-0 font-weight-bold">Entre les deux</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-sm-6 mt-lg-0 mt-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex mb-4">
+                <div class="form-check form-switch ms-auto">
+                  <input class="form-check-input" type="checkbox" name="choix_batterie" id="choix_batterie"
+                    value='{{form.Batteries}}'>
+
+                </div>
+              </div>
+              <img src=" {% static 'admin/assets/img/batteries.jpg' %}">
+
+              <p class="mt-4 font-weight-bold mb-0">Batteries</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-sm-6 mt-lg-0 mt-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex mb-4">
+                <div class="form-check form-switch ms-auto">
+                  <input class="form-check-input" type="checkbox" id="Revente">
+                </div>
+              </div>
+              <img src=" {% static 'PV/img/euros.png' %}">
+              <p class="mt-4 font-weight-bold mb-0">Revente de surplus </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-sm-6 mt-lg-0 mt-4">
+          <div class="  h-100">
+            <div class="card-body">
+              <input type='submit' class='mt-7 btn btn-icon bg-gradient-primary' value='Lancer la simulation' />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="row">
+      {% if etat_batterie %}
+      <div class="col-xl-5 ms-auto mt-xl-0 mt-4">
+        {% else %}
+        <div class="col ms-auto mt-xl-0 mt-4">
+          {% endif %}
+
+
+
+
+          <div class="card h-100">
+            <div class="card-body text-center p-3">
+              <h6 class="text-start">Taille de la Centrale </h6>
+              <!-- Single slider (with shadows) -->
+              <div class="ps-1 mt-5 mb-0">
+                <h4 class="font-weight-bold "><span class="text-dark" id="rangeValue"> {{centrale_GT}}</span><span
+                    class="text-body"> kWc</span></h4>
+                <input class="range" type="range" id="Centrale" name="Centrale" min="0" max="12"
+                  onChange="rangeSlide_centrale(this.value)" onmousemove="rangeSlide_centrale(this.value)"
+                  value={{curseur_centrale}}></input>
+
+              </div>
+              <script type="text/javascript">
+                function rangeSlide_centrale(value) {
+                  var vals_centrale = [3.75, 6, 16.5, 24, 36, 42, 57, 100, 114, 171, 228, 285, 342];
+                  document.getElementById('rangeValue').innerHTML = vals_centrale[value];
+                }
+              </script>
+
+
+
+            </div>
+          </div>
+        </div>
+
+        {% if etat_batterie %}
+        <div class="col-xl-5 ms-auto mt-xl-0 mt-4" id="Capacite_Batteries">
+          <div class="card h-100">
+            <div class="card-body text-center p-3">
+              <h6 class="text-start">Energie Stockée</h6>
+              <div class="ps-1 mt-5 mb-0">
+
+                <h4 class="font-weight-bold "><span class="text-dark" id="rangeValue2">{{batteries_GT}}</span><span
+                    class="text-body"> kWh</span></h4>
+
+                <input class="range" type="range" id='Batteries' name="Batteries" min='0' max='13'
+                  onChange="rangeSlide(this.value)" onmousemove="rangeSlide(this.value)"
+                  value={{curseur_batterie}}></input>
+              </div>
+
+              <script type="text/javascript">
+                function rangeSlide(value) {
+                  var vals = [0, 9.6, 12, 14.4, 16.8, 19.2, 21.6, 24, 26.4, 28.8, 31.2, 33.6, 36, 38.4];
+                  document.getElementById('rangeValue2').innerHTML = vals[value];
+                }
+              </script>
+
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+</div>
+
+</form>
+
+<div class="row">
+  <div class="col-xl-7">
+    <div class="card">
+      <div class="card-header d-flex pb-0 p-3">
+        <h6 class="my-auto">Courbes de Charge</h6>
+        <div class="nav-wrapper position-relative ms-auto w-50">
+          <ul class="nav nav-pills nav-fill p-1" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#cam1" role="tab"
+                aria-controls="cam1" aria-selected="true">
+                Jour Ouvré
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#cam2" role="tab" aria-controls="cam2"
+                aria-selected="false">
+                Weekend
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-body p-3 mt-2">
+        <div class="tab-content" id="v-pills-tabContent">
+          <div class="tab-pane fade show position-relative active height-750 border-radius-lg" id="cam1" role="tabpanel"
+            aria-labelledby="cam1">
+            <div class="card-body ">
+
+              <canvas id="line-chart" width="400" height="300"></canvas>
+
+              <script>
+
+                new Chart(document.getElementById("line-chart"), {
+                  type: 'bar',
+                  data: {
+                    labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                      '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                    datasets: [{
+                      data: {{ graph1 }},
+                  type: 'line',
+                  label: "Energie demandée par le bâtiment",
+                  borderColor: "#FF0000",
+                  backgroundColor: "#FDFEFE",
+                  fill: false,
+                }, {
+                  data: {{ graph2 }},
+                  type: 'line',
+                  label: "Energie produite par le générateur photovoltaïque dimensionné ",
+                  borderColor: "#DAF7A6",
+                  backgroundColor: "#FDFEFE",
+                  fill: false,
+                             },
+                  {
+                    label: 'Energie photovoltaïque autoconsommée par le bâtiment',
+                    data: {{ graph3 }},
+                  borderColor: '#FFC108',
+                  fill: 1,
+                  stack: 'Stack 0',
+                  backgroundColor: 'rgba(255,193,8,0.5)',
+                            },
+                  {
+                    label: 'Energie photovoltaïque délivré par la batterie',
+                    data: {{ graph4 }},
+                  borderColor: '#783f04',
+                  fill: 1,
+                  stack: 'Stack 0',
+                  backgroundColor: 'rgba(120,63,4,0.5)',
+                            },
+                  {
+                    label: "Energie électrique consommé sur l'abonnement du fournisseur  d'électricité",
+                    data: {{ EDF }},
+                  borderColor: '#2986cc',
+                  fill: 1,
+                  stack: 'Stack 0',
+                  backgroundColor: 'rgba(41,134,204,0.5)',
+                            }
+                            ]
+                          },
+                  options: {
+                  plugins: {
+                    filler: {
+                      propagate: true,
+                    }
+                  },
+                  responsive: true,
+                  scales: {
+                    x: [{
+                      stacked: true,
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'Heures'
+                      }
+                    }],
+                    y: [{
+                      stacked: true,
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'kW'
+                      }
+                    }]
+                  },
+
+                  title: {
+                    display: true,
+                    text: 'Profil énergétique'
+                  }
+                }
+                        });
+
+
+
+              </script>
+            </div>
+          </div>
+          <div class="tab-pane fade position-relative height-750 border-radius-lg" id="cam2" role="tabpanel"
+            aria-labelledby="cam2">
+            <div class="card-body ">
+              <canvas id="weekend-chart" width="400" height="300"></canvas>
+              <script>
+
+                new Chart(document.getElementById("weekend-chart"), {
+                  type: 'bar',
+                  data: {
+                    labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                      '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                    datasets: [{
+                      data: {{ graph5 }},
+                  type: 'line',
+                  label: "Energie demandé par le bâtiment",
+                  borderColor: "#FF0000",
+                  backgroundColor: "#FDFEFE",
+                  fill: false,
+                }, {
+                  data: {{ graph2 }},
+                  type: 'line',
+                  label: "Energie produite par le générateur photovoltaïque dimensionné ",
+                  borderColor: "#DAF7A6",
+                  backgroundColor: "#FDFEFE",
+                  fill: false,
+                             },
+                  {
+                    label: 'Energie photovoltaïque autoconsommé par le bâtiment',
+                    data: {{ graph6 }},
+                  borderColor: '#FFC108',
+                  fill: 1,
+                  stack: 'Stack 0',
+                  backgroundColor: 'rgba(255,193,8,0.5)',
+                            },
+                  {
+                    label: 'Energie photovoltaïque délivré par la batterie',
+                    data: {{ graph7 }},
+                  borderColor: '#783f04',
+                  fill: 1,
+                  stack: 'Stack 0',
+                  backgroundColor: 'rgba(120,63,4,0.5)',
+                            },
+                  {
+                    label: "Energie électrique consommé sur l'abonnement du fournisseur  d'électricité",
+                    data: {{ EDF_1 }},
+                  borderColor: '#2986cc',
+                  fill: 1,
+                  stack: 'Stack 0',
+                  backgroundColor: 'rgba(41,134,204,0.5)',
+                            }
+                            ]
+                          },
+                  options: {
+                  plugins: {
+                    filler: {
+                      propagate: true,
+                    }
+                  },
+                  responsive: true,
+                  scales: {
+                    x: [{
+                      stacked: true,
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'Heures'
+                      }
+                    }],
+                    y: [{
+                      stacked: true,
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'kW'
+                      }
+                    }]
+                  },
+
+                  title: {
+                    display: true,
+                    text: 'Profil énergétique'
+                  }
+                }
+                        });
+
+              </script>
+            </div>
+
+          </div>
+          <div class="tab-pane fade position-relative height-400 border-radius-lg" id="cam3" role="tabpanel"
+            aria-labelledby="cam3"
+            style="background-image: url('/static/assets/img/home-decor-3.jpg'); background-size:cover;">
+            <div class="position-absolute d-flex top-0 w-100">
+              <p class="text-white p-3 mb-0">17.05.2021 4:57PM</p>
+              <div class="ms-auto p-3">
+                <span class="badge badge-secondary">
+                  <i class="fas fa-dot-circle text-danger"></i>
+                  Recording</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-xl-5 ms-auto mt-xl-0 mt-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card bg-gradient-primary">
+          <div class="card-body p-3">
+            <div class="row">
+              <div class="col-8 my-auto">
+                <div class="numbers">
+                  <p class="text-white text-sm mb-0 text-capitalize font-weight-bold opacity-7">Suggestion</p>
+                  <h5 class="text-white font-weight-bolder mb-0">
+                    Catalogue GT
+                  </h5>
+                </div>
+              </div>
+              <div class="col-4 text-end">
+                <h5 class="text-white font-weight-bolder mb-0">{{standard}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 style="color:#0dcaf0"><span id="status1" countto={{centrale_GT}}>{{centrale_GT}}</span> <span
+                class="text-lg ms-n2">kWc</span></h1>
+            <h6 class="mb-0 font-weight-bolder">Centrale (Outil)</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mt-md-0 mt-4">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 style="color:#0dcaf0"> <span id="status2" countto={{batteries_GT}}>{{batteries_GT}}</span> <span
+                class="text-lg ms-n1">kWh</span></h1>
+            <h6 class="mb-0 font-weight-bolder">Batterie (Outil)</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 style="color:#0dcaf0"><span id="status1" countto={{surface_GT}}>{{surface_GT}}</span> <span
+                class="text-lg ms-n2">m²</span></h1>
+            <h6 class="mb-0 font-weight-bolder">Surface(outil)</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mt-md-0 mt-4">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 style="color:#FF0000"> <span id="status2" countto={{toiture}}>{{Toiture}}</span> <span
+                class="text-lg ms-n1">m²</span></h1>
+            <h6 class="mb-0 font-weight-bolder">Surface Maximum</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 class="text-gradient text-primary"><span id="status3"
+                countto={{Taux_Autoconso}}>{{Taux_Autoconso}}</span> <span class="text-lg ms-n2">%</span></h1>
+            <h6 class="mb-0 font-weight-bolder">Taux Autoconso</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mt-md-0 mt-4">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 class="text-gradient text-primary"> <span id="status4"
+                countto={{Taux_Autoprod}}>{{Taux_Autoprod}}</span> <span class="text-lg ms-n1">%</span></h1>
+            <h6 class="mb-0 font-weight-bolder">Taux Autoprod</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 class="text-gradient text-primary"><span id="status5"
+                countto={{Surface_Custom}}>{{Surface_Custom}}</span> <span class="text-lg ms-n2">m²</span></h1>
+            <h6 class="mb-0 font-weight-bolder">Surface</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mt-md-0 mt-4">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 class="text-gradient text-primary"><span id="status6" countto="417"> --</span> <span
+                class="text-lg ms-n2"></span></h1>
+            <h6 class="mb-0 font-weight-bolder">TRI</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if etat_batterie %}
+<div class="row mt-4">
+  <div class="col-lg-6 mt-lg-0 mt-4">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="card h-300">
+          <div class="card-body p-3">
+            <h6>Stockage Batterie Jour Ouvré</h6>
+            <div class="chart pt-3">
+              <canvas id="batterie_ouvre" class="chart-canvas" width="700" height="700"></canvas>
+
+              <script>
+
+                new Chart(document.getElementById("batterie_ouvre"), {
+                  type: 'bar',
+                  data: {
+                    labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                      '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                    datasets: [{
+                      data: {{ stockage_ouvre }},
+                  label: "Stockage batterie",
+                  borderColor: "#FF0000",
+                  backgroundColor: "#FF0000",
+                  fill: false,
+                }
+                            ]
+                          },
+                  options: {
+                  plugins: {
+                    filler: {
+                      propagate: true,
+                    }
+                  },
+                  responsive: true,
+
+
+                }
+
+                        });
+
+              </script>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 ">
+        <div class="card h-300">
+          <div class="card-body p-3">
+            <h6>Stockage Batterie Weekend</h6>
+            <div class="chart pt-3">
+              <canvas id="batterie_weekend" class="chart-canvas" class="chart-canvas" width="700" height="700"></canvas>
+              <script>
+
+                new Chart(document.getElementById("batterie_weekend"), {
+                  type: 'bar',
+                  data: {
+                    labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                      '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                    datasets: [{
+                      data: {{ stockage_weekend }},
+                  label: "Stockage batterie",
+                  borderColor: "#FF0000",
+                  backgroundColor: "#FF0000",
+                  fill: false,
+                }
+                            ]
+                          },
+                  options: {
+                  plugins: {
+                    filler: {
+                      propagate: true,
+                    }
+                  },
+                  responsive: true,
+
+
+                }
+
+                        });
+
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+</div>
+</div>
+{% include "includes/footer.html" %}
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+
+<script src=" {% static 'admin/assets/js/plugins/choices.min.js' %}"></script>
+<script src=" {% static 'admin/assets/js/plugins/countup.min.js' %}"></script>
+<script src=" {% static 'admin/assets/js/plugins/chartjs.min.js' %}"></script>
+<script src=" {% static 'admin/assets/js/plugins/round-slider.min.js' %}"></script>
+<script>
+
+  // Without JQuery
+  var slider = new Slider("#ex6");
+  slider.on("slide", function (sliderValue) {
+    document.getElementById("ex6SliderVal").textContent = sliderValue;
+  });
+
+
+  // Count To
+  if (document.getElementById('status1')) {
+    const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
+    if (!countUp.error) {
+      countUp.start();
+    } else {
+      console.error(countUp.error);
+    }
+  }
+  if (document.getElementById('status2')) {
+    const countUp = new CountUp('status2', document.getElementById("status2").getAttribute("countTo"));
+    if (!countUp.error) {
+      countUp.start();
+    } else {
+      console.error(countUp.error);
+    }
+  }
+  if (document.getElementById('status3')) {
+    const countUp = new CountUp('status3', document.getElementById("status3").getAttribute("countTo"));
+    if (!countUp.error) {
+      countUp.start();
+    } else {
+      console.error(countUp.error);
+    }
+  }
+  if (document.getElementById('status4')) {
+    const countUp = new CountUp('status4', document.getElementById("status4").getAttribute("countTo"));
+    if (!countUp.error) {
+      countUp.start();
+    } else {
+      console.error(countUp.error);
+    }
+  }
+  if (document.getElementById('status5')) {
+    const countUp = new CountUp('status5', document.getElementById("status5").getAttribute("countTo"));
+    if (!countUp.error) {
+      countUp.start();
+    } else {
+      console.error(countUp.error);
+    }
+  }
+  if (document.getElementById('status6')) {
+    const countUp = new CountUp('status6', document.getElementById("status6").getAttribute("countTo"));
+    if (!countUp.error) {
+      countUp.start();
+    } else {
+      console.error(countUp.error);
+    }
+  }
+
+    // Courbes de Charge Jour Ouvré
+
+    //  Courbes de Charge Jour Weekend
+
+
+</script>
+
+{% endblock javascripts %}

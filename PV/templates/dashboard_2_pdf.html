@@ -1,0 +1,157 @@
+<head>
+    <h1> Préconfiguration <small>by Green Technologie</small></h1>
+    <style>
+        table td {
+            text-align: center;
+        }
+
+        table.center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="row">
+        <table>
+            <thead>
+                <th>
+                    <h1>
+                        Site
+                    </h1>
+                </th>
+                <th>
+                    <h1>
+                        Entité
+                    </h1>
+                </th>
+                <th>
+                    <h1>
+                        Contact
+                    </h1>
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align:center">
+                        <h3>N° {{ site }}</h3>
+                    </td>
+                    <td style="text-align:center">
+                        <h3>{{ nom_entreprise }}</h3>
+                    </td>
+                    <td style="text-align:center">
+                        <h3> {{ mail }}</h3>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="table">
+
+            <table>
+
+                <thead>
+                    <th>
+                        <h1 class="card-category">Taille de la centrale</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">Modules</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">Surface</h1>
+                    </th>
+                    <th>
+                        <h1 class="card-category">N° solution</h1>
+                    </th>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ taille }} kWc</h3>
+                        </td>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ nb_modules }}</h3>
+                        </td>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ surface }} m²</h3>
+                        </td>
+                        <td style="text-align:center">
+                            <h3 class="card-title">{{ n }}</h3>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <table>
+            <thead>
+                <th>
+                    <h1 class="card-body">Autoconsommation</h1>
+                </th>
+                <th>
+                    <h1 class="card-body">Autoproduction</h1>
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align:center">
+                        <h2 class="card-title">{{ autoconso }} %</h2>
+                    </td>
+                    <td style="text-align:center">
+                        <h2 class="card-title">{{ autoprod }} %</h2>
+                    </td>
+                </tr>
+
+                <tr>
+
+                </tr>
+                <tr>
+
+                </tr>
+
+                <tr>
+                    <td style="text-align:center">
+                        <p class="card-body"><B>Consommer l'électricité produite. </B></p>
+                    </td>
+                    <td style="text-align:center">
+                        <p class="card-body"><B>Produire l'électricité consommée. </B> </p>
+                    </td>
+                </tr>
+                <tr>
+
+                </tr>
+                <tr>
+                    <td style="text-align:center">
+                        <p class="card-body"> Vous consommez directement <B> {{ autoconso }} % </B> de
+                            l'électricité
+                            que
+                            produit
+                            la
+                            centrale photovoltaïque sur une année.</p>
+                    </td>
+                    <td style="text-align:center">
+                        <p class="card-body">La centrale photovoltaïque produit <B>{{ autoprod }} %</B> de votre
+                            consommation
+                            annuelle d'électricité.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</body>

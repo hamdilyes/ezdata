@@ -1,0 +1,65 @@
+{% extends 'users/templates/base.html' %}
+
+{% block content %}
+
+<!-- Masthead-->
+<header class="masthead">
+    <div class="container px-4 px-lg-5 h-100">
+
+        <div class="row">
+            <div class="col-md-4 offset-4 mr-auto ml-auto">
+                <div class="card ">
+                    <div class="card-header ">
+                        <center>
+                            <h5 class="card-title">{{ projet_name }}</h5>
+                        </center>
+                    </div>
+                    <div class="card-body ">
+                        <p style="text-align:center">{{ nb_enseignes }} études</p>
+                    </div>
+                    <div class="card-footer">
+                        <center>
+                            <a class="text-info text-gradient font-weight-bold" href="{% url 'projets' %}">
+                                Retour</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider">
+        <div class="row">
+            <div class="wrapper4">
+                {% for e in enseignes %}
+                <div class="card card-stats">
+                    <div class="card card-header">
+                        <center>
+                            <a class="text-info text-gradient font-weight-bold" href="{% url 'clients_exists' e.id %}">
+                                <h6>{{ e.name }}</h6>
+                            </a>
+                        </center>
+                    </div>
+
+                    <div class="card card-body">
+                        <!-- <p style="text-align:center">Id : {{ e.id }} </p> -->
+                        <p style="text-align:center">Secteur : {{ e.secteur }} </p>
+                        <!-- <p style="text-align:center">Nombre de sites : {{ e.nb_sites }}
+                        </p> -->
+                        <p style="text-align:center">Effectif : {{ e.effectif }} </p>
+                    </div>
+
+                    {% if results_ok|get_item:e.id %}
+                    <div class="card card-footer">
+
+                        <a style="text-align:center" href="{% url 'results' e.id %}">Résultats</a>
+
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</header>
+
+{% endblock content %}

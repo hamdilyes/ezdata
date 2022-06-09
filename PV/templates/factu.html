@@ -1,0 +1,226 @@
+{% extends 'base_results.html' %}
+
+{% block title %} Site N° {{ site }} {% endblock %}
+
+{% block navbar %}
+<li>
+  <a href="{% url 'results' id_enseigne %}">
+    <i class="nc-icon nc-chart-bar-32"></i>
+    <p>Photovoltaïque</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'mde' id_enseigne %}">
+    <i class="nc-icon nc-bulb-63"></i>
+    <p>Maîtrise de l'énergie</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'mobi' id_enseigne %}">
+    <i class="nc-icon nc-pin-3"></i>
+    <p> Mobilité</p>
+  </a>
+</li>
+<li class="active">
+  <a href="{% url 'factu' id_enseigne%}">
+    <i class="nc-icon nc-credit-card"></i>
+    <p> Devis</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'bilan' id_enseigne %}">
+    <i class="nc-icon nc-tag-content"></i>
+    <p> Bilan</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'pdftest' id_enseigne 'rapport_pdf.html' 0 %}">
+    <i class="nc-icon nc-send"></i>
+    <p> Rapport complet</p>
+  </a>
+</li>
+{% endblock navbar %}
+{% block content %}
+{% load humanize %}
+
+<!-- End Navbar -->
+<div class="content">
+  <form action="" method="POST" name="formA">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6 ">
+        <label>N° de site </label>
+        <div class="form-group">
+
+          <select class="form-control" name="site">
+
+            {% for i in nb %}
+
+            <option>
+              {{ forloop.counter }}
+            </option>
+
+            {% endfor %}
+            <!-- <option> Multi-sites</option> -->
+          </select>
+
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Site' value='Site' />
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Revenir au questionnaire' />
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <!-- <button class="btn btn-primary bg-gradient-info mt-lg-7 mb-0" onClick="window.print()" type="button"
+          name="button">Rapport PDF</button> -->
+        <input type='submit' class='btn btn-fill btn-primary btn-wd' name='download' value='Rapport PDF' />
+      </div>
+  </form>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-body"> Devis</h4>
+        <p class="card-body">Ce devis est estimatif. Il est susceptible d'évoluer selon les travaux effectués sur place.
+        </p>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class=" text-primary">
+              <th>
+                Module
+              </th>
+              <th>
+                Quantité
+              </th>
+              <th>
+                Coût HA unitaire
+              </th>
+              <th>
+                Coût Unitaire Transport
+              </th>
+              <!-- <th>
+                Prix Unitaire Prédéfini
+              </th> -->
+              <th>
+                Coût Total HA
+              </th>
+              <th>
+                Coût Total Transport
+              </th>
+              <th>
+                Marge
+              </th>
+              <th>
+                Prix
+              </th>
+              <th>
+                Prix unitaire
+              </th>
+            </thead>
+            <tbody>
+              {% for i in module %}
+              <tr>
+                {% for f in i.fields %}
+                <td>
+                  {{f}}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body ">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-alert-circle-i text-info"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category"><small>Coût Total HA</small> </p>
+              <p class="card-title" style="font-size: 24px"><small>{{ totalHA|intcomma }} €</small>
+              <p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body ">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-alert-circle-i text-primary"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category"><small>Coût Transport</small></p>
+              <p class="card-title" style="font-size: 24px"><small>{{ totalTransport|intcomma }} €</small>
+              <p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body ">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-alert-circle-i text-warning"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category"><small>Marge Totale</small></p>
+              <p class="card-title" style="font-size: 24px"><small>{{ totalMarge|intcomma }} €</small>
+              <p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body ">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-alert-circle-i text-success"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category"><small>Prix Total</small></p>
+              <p class="card-title" style="font-size: 24px"><small>{{ totalPrix|intcomma }} €</small>
+              <p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

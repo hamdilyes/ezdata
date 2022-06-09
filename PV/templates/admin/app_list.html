@@ -1,0 +1,103 @@
+{% load i18n %}
+
+<title>
+    Dashboard
+</title>
+
+      {% load static %}
+
+<!-- Specific CSS goes HERE -->
+<!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+ <link  href="{% static 'admin/assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+  <link href="{% static 'admin/assets/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href=" {% static 'admin/assets/css/nucleo-svg.css' %}"  rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href=" {% static 'admin/assets/css/soft-ui-dashboard.css' %}" rel="stylesheet" />
+
+{% block coltype %}{% endblock %}
+
+<div class="container-fluid py-4"  id="content-main">
+    <div class="row">
+      <div class="col-lg-7 position-relative z-index-2">
+        <div class="card card-plain mb-4">
+          <div class="card-body p-3">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="d-flex flex-column h-100">
+                  <h2 class="font-weight-bolder mb-0">Modèles</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+{% if app_list %}
+  {% for app in app_list %}
+
+    <div class="app-{{ app.app_label }} module{% if app.app_url in request.path|urlencode %} current-app{% endif %}">
+         <div class="row">
+
+      <table>
+          {% if app.name == 'Pv' %}
+            <a class="text-sm mb-0 text-capitalize font-weight-bold" href="{{ app.app_url }}" >Centrales Photovoltaïques </a>
+          {% else %}
+           <a class="text-sm mb-0 text-capitalize font-weight-bold" href="{{ app.app_url }}" >{{ app.name }}</a>
+          {% endif %}
+        {% for model in app.models %}
+          <tr class="model-{{ model.object_name|lower }}{% if model.admin_url in request.path|urlencode %} current-model{% endif %}"></tr>
+            {% if model.admin_url %}
+
+          <div class="col-lg-5 col-sm-6 mt-sm-0 mt-4">
+            <div class="card  mb-4">
+              <div class="card-body p-3">
+                <div class="row">
+                  <div class="col-8">
+                    <div class="numbers">
+                        <a class="text-sm mb-0 text-capitalize font-weight-bold" href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>{{ model.name }}</a>
+                    </div>
+                      {% if model.admin_url and show_changelinks %}
+                        {% if model.view_only %}
+                        <a href="{{ model.admin_url }}" class="viewlink">{% translate 'View' %}</a>
+                        {% else %}
+                        <a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a>
+                        {% endif %}
+                    {% elif show_changelinks %}
+                    {% endif %}
+                      {% if model.add_url %}
+                    <a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a>
+                      {% else %}
+                     {% endif %}
+                  </div>
+                  <div class="col-4 text-end">
+                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                      <i class="ni ni-check-bold text-lg opacity-10" aria-hidden="true"></i>
+                    </div>
+                  </div>
+               </div>
+              </div>
+              </div>
+
+
+                  {% else %}
+              <th scope="row">{{ model.name }}</th>
+            {% endif %}
+
+
+        {% endfor %}
+      </table>
+    </div>
+ </div>
+
+  {% endfor %}
+{% else %}
+  <p>{% translate 'You don’t have permission to view or edit anything.' %}</p>
+{% endif %}
+  </div>
+
+  </div>
+
+</div>

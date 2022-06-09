@@ -1,0 +1,11 @@
+<head>
+    <h1>{{ dic.hi }}</h1>
+</head>
+
+<body>
+    {% for site in nb %}
+    <h1>
+        {{ dic|get_item:site }}
+    </h1>
+    {% endfor %}
+</body>

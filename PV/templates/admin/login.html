@@ -1,0 +1,109 @@
+{% extends 'layouts/base-fullscreen.html' %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+
+{% block title %} Auth SignIN Cover {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+{% if form.errors and not form.non_field_errors %}
+<p class="errornote">
+{% if form.errors.items|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+</p>
+{% endif %}
+
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endfor %}
+{% endif %}
+
+<div id="content-main">
+
+{% if user.is_authenticated %}
+<p class="errornote">
+{% blocktranslate trimmed %}
+    You are authenticated as {{ username }}, but are not authorized to
+    access this page. Would you like to login to a different account?
+{% endblocktranslate %}
+</p>
+{% endif %}
+
+
+ {% load static %}
+  <main class="main-content main-content-bg mt-0">
+    <section>
+      <div class="page-header min-vh-75">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-8">
+                <div class="card-header pb-0 text-start">
+                  <h3 class="font-weight-bolder text-info text-gradient">Bienvenue sur l'Admin EZ DATA</h3>
+                  <p class="mb-0">Saisissez votre adresse électronique et votre mot de passe pour vous connecter</p>
+                </div>
+                <div class="card-body">
+                  <form action="{{ app_path }}" method="post" id="login-form" class="text-start" role="form">
+                      {% csrf_token %}
+
+                    <label>Identifiant de connexion</label>
+                    <div class="mb-3">
+                        {{ form.username.errors }}
+                        {% render_field form.username  class="form-control" placeholder="Adresse mail ou identifiant" %}
+                    </div>
+
+                    <label>Mot de Passe</label>
+                    <div class="mb-3">
+                        {{ form.password.errors }}
+                        {% render_field form.password  class="form-control" placeholder="Mot de passe" %}
+                       <input type="hidden" name="next" value="{{ next }}">
+
+                        {% url 'admin_password_reset' as password_reset_url %}
+                          {% if password_reset_url %}
+                          <div class="password-reset-link">
+                            <a href="{{ password_reset_url }}">{% translate 'Forgotten your password or username?' %}</a>
+                          </div>
+                          {% endif %}
+
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
+                      <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    <div class="text-center">
+                      <input type="submit" value="{% translate 'Log in' %}"  class="btn bg-gradient-info w-100 mt-4 mb-0">
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <p class="mb-4 text-sm mx-auto">
+                    Toujours pas de compte ?
+                    <a href="javascript:;" class="text-info text-gradient font-weight-bold">Inscris-toi</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('/static/admin/assets/img/curved-images/curved9.jpg')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %} {% endblock javascripts %}

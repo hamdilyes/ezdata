@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+<head>
+    <script>
+        {% if messages %}
+        {% for message in messages %}
+        alert('{{message}}')
+        {% endfor %}
+        {% endif %}
+    </script>
+</head>
+
+{% block content %}
+
+<!--        You can switch " data-color="orange" "  with one of the next bright colors: "blue", "green", "orange", "red", "azure"          -->
+
+<div class="wizard-navigation">
+    <div class="progress-with-circle">
+        <div class="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="2" aria-valuemax="3"
+            style="width: 21%;"></div>
+    </div>
+    <ul>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-user"></i>
+                </div>
+                Informations génerales
+            </a>
+        </li>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-home"></i>
+                </div>
+                Bâtiments
+            </a>
+        </li>
+        <li>
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-shine"></i>
+                </div>
+                Énergie
+
+            </a>
+        </li>
+        <li class="active">
+            <a href="" data-toggle="tab">
+                <div class="icon-circle">
+                    <i class="ti-car"></i>
+                </div>
+                Mobilité
+
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="tab-content">
+
+    <div class="row">
+        <h5 class="info-text"> Informations sur la mobilité </h5>
+        {% if not etat_form %}
+        {% if not etat_next %}
+        <p class="category">Merci de confirmer les informations de tous les sites avant de pouvoir
+            continuer. </p>
+        {% endif %}
+        {% endif %}
+    </div>
+    <hr class="divider">
+    <div class="row">
+        <form action="" method="POST" name="formE">
+            {% csrf_token %}
+            <div class="row">
+                {% if not etat_form %}
+
+                <div class="col-sm-5 col-sm-offset-1">
+                    <label>N° de site </label>
+                    <div class="form-group">
+
+                        <select class="form-control" name="site">
+
+                            {% for i in nb %}
+
+                            <option>
+                                {{ forloop.counter }}
+                            </option>
+
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-offset-7">
+                    <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Site' value='Choix du site' />
+
+                    {% if etat_next %}
+                    <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Next' value='Terminer' />
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-sm-1 col-sm-offset-1">
+                <div class="pull-left">
+                    <input type='submit' class='btn btn-default btn-wd' name='Précédent' value='Précédent' />
+                </div>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if etat_form %}
+
+    <form action="" method="POST" name="formF">
+        {% csrf_token %}
+        <div class="col-sm-10 col-sm-offset-1">
+            <div class="form-group">
+                <label>N° de site </label>
+                <div class="form-control">
+                    {{ site }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="vehicule_fonction"
+                class="form-group {% if formH.installation.errors %}has-warning has-feedback{% endif %}">
+                <label>Nombre de véhicules citadins </label>
+                {{ formI.vehicule_fonction }}
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="km_an_vehicule_fonction"
+                class="form-group {% if formH.puissance.errors %}has-warning has-feedback{% endif %}">
+                <label>kilométrage (km / véhicule / an) </label>
+                {{ formI.km_an_vehicule_fonction }}
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="vehicule_utilitaire"
+                class="form-group {% if formH.reference.errors %}has-warning has-feedback{% endif %}">
+                <label>Nombre de véhicules utilitaires </label>
+                {{ formI.vehicule_utilitaire }}
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="km_an_vehicule_utilitaire"
+                class="form-group {% if formH.nb_kW.errors %}has-warning has-feedback{% endif %}">
+                <label>kilométrage (km / véhicule / an) </label>
+                {{ formI.km_an_vehicule_utilitaire }}
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="parking" class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                <label>Présence d'un parking </label>
+                {{ formI.parking }}
+            </div>
+        </div>
+
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="acces" class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}"
+                id="access">
+                <label>Accessibilité du parking </label>
+                {{ formI.acces }}
+            </div>
+        </div>
+
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="borne" class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                <label>Avec installation de bornes ? </label>
+                {{ formI.borne }}
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-1">
+            <div id="pt_de_charge" class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                <label>Nombre de points de charge </label>
+                {{ formI.pt_de_charge }}
+            </div>
+        </div>
+</div>
+<div class="wizard-footer">
+    <div class="pull-right">
+        <input type='submit' class='btn btn-default btn-wd' name='Enregistrer' value='Enregistrer' />
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+</form>
+</div>
+
+{% endif %}
+
+<script>
+
+    $("#id_vehicule_fonction").change(function () {
+        if ($(this).val() <= 0) {
+            $('#id_km_an_vehicule_fonction').hide();
+        } else {
+            $('#id_km_an_vehicule_fonction').show();
+        }
+    });
+
+    $("#id_vehicule_utilitaire").change(function () {
+        if ($(this).val() <= 0) {
+            $('#id_km_an_vehicule_utilitaire').hide();
+        } else {
+            $('#id_km_an_vehicule_utilitaire').show();
+        }
+    });
+
+    $("#id_parking").change(function () {
+        if ($(this).val() === 'Non') {
+            $('#id_acces').hide();
+            $('#id_borne').hide();
+            $('#id_pt_de_charge').hide();
+        } else {
+            $('#id_acces').show();
+            $('#id_borne').show();
+            $('#id_pt_de_charge').show();
+        }
+    });
+
+    $("#id_borne").change(function () {
+        if ($(this).val() === 'Non') {
+            $('#id_pt_de_charge').hide();
+        } else {
+            $('#id_pt_de_charge').show();
+        }
+    });
+
+
+</script>
+
+{% endblock %}

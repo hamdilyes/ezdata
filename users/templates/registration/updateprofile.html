@@ -1,0 +1,90 @@
+{% extends 'layouts/base-fullscreen.html' %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% load crispy_forms_tags %}
+
+
+{% block title %} Auth SignIN Cover {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+{% if user_form.errors and not user_form.non_field_errors %}
+<p class="errornote">
+    {% if user_form.errors.items|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate
+    "Please correct the errors below." %}{% endif %}
+</p>
+{% endif %}
+
+{% if user_form.non_field_errors %}
+{% for error in user_form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endfor %}
+{% endif %}
+
+<div id="content-main">
+
+
+
+
+    {% load static %}
+    <main class="main-content main-content-bg mt-0">
+        <section>
+            <div class="page-header min-vh-75">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+                            <div class="card card-plain mt-8">
+                                <div class="card-header pb-0 text-start">
+                                    <h3 class="font-weight-bolder text-info text-gradient">Mise à jour de profil
+                                    </h3>
+                                    <!-- <p class="mb-0">Saisissez votre adresse identifiant et votre mot de passe pour vous
+                                        connecter</p> -->
+                                </div>
+                                <div class="card-body">
+                                    <form action="{{ app_path }}" method="post" id="update-form" class="text-start"
+                                        role="form">
+                                        {% csrf_token %}
+                                        {{ user_form|crispy }}
+
+                                        <div class="text-center">
+                                            <input type="submit" value="{% translate 'Enregistrer' %}"
+                                                class="btn bg-gradient-info w-100 mt-4 mb-0">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                                    <p class="mb-4 text-sm mx-auto">
+                                        <!-- <a href="javascript:;"
+                                            class="text-info text-gradient font-weight-bold">Inscrivez-vous</a> -->
+                                        <a class="text-info text-gradient font-weight-bold"
+                                            href="{% url 'projets' %}">Retour aux projets</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
+                                    style="background-image:url('/static/admin/assets/img/curved-images/curved9.jpg')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %} {% endblock javascripts %}

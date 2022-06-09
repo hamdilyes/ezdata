@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+<head>
+    <script>
+        {% if messages %}
+        {% for message in messages %}
+        alert('{{message}}')
+        {% endfor %}
+        {% endif %}
+    </script>
+</head>
+
+{% block content %}
+
+<!--        You can switch " data-color="orange" "  with one of the next bright colors: "blue", "green", "orange", "red", "azure"          -->
+
+
+<form action=" {% url 'greentech'%}" method="POST">
+    {% csrf_token %}
+    <div class="tab-content">
+        <div class="tab-pane" id="about">
+            <div class="row">
+                <h5 class="info-text"> Dites en plus sur votre entreprise.</h5>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group">
+                        <label>Entité <small>(requis)</small></label>
+                        {{formA.nom_entreprise}}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formC.territ.errors %}has-warning has-feedback{% endif %}">
+                        <label>Territoire <small>(requis)</small></label>
+                        {{ formC.territ }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formB.mail.errors %}has-warning has-feedback{% endif %}">
+                        <label>E-mail <small>(requis)</small></label>
+                        {{ formA.mail }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formB.secteur.errors %}has-warning has-feedback{% endif %}">
+                        <label>Secteur <small>(requis)</small></label>
+                        {{ formB.secteur }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formB.nom_entreprise.errors %}has-warning has-feedback{% endif %}">
+                        <label>Nombre de sites <small>(requis)</small></label>
+                        {{ formB.nb_sites }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formB.effectif.errors %}has-warning has-feedback{% endif %}">
+                        <label>Effectif <small>(requis)</small></label>
+                        {{ formB.effectif }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wizard-footer">
+            <div class="pull-right">
+                <input type='button' class='btn btn-next btn-fill btn-sucess btn-wd' name='next' value='Suivant' />
+                <input type='submit' class='btn btn-finish btn-fill btn-sucess btn-wd' name='finish' value='Terminer' />
+            </div>
+        </div>
+
+
+
+        {% for i in formB.nb_sites %}
+
+        {{ forloop.counter }}
+        <div class="tab-pane" id="account">
+            <h5 class="info-text"> Informations sur un bâtiment type </h5>
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formG.type_batiment.errors %}has-warning has-feedback{% endif %}">
+                        <label>N° du site <small>(requis)</small></label>
+                        {{ formG.type_batiment }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formG.type_batiment.errors %}has-warning has-feedback{% endif %}">
+                        <a href="@"></a> <label>Type de Bâtiment <small>(requis)</small></label>
+                        {{ formG.type_batiment }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formE.type_profil.errors %}has-warning has-feedback{% endif %}">
+                        <label>Type de profil <small>(requis)</small></label>
+                        {{ formE.type_profil }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formG.taille.errors %}has-warning has-feedback{% endif %}">
+                        <label>Taille du bâtiment <small>(requis)</small></label>
+                        {{ formG.taille }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formG.taille.errors %}has-warning has-feedback{% endif %}">
+                        <label>Nombre d'étages <small>(requis)</small></label>
+                        {{ formG.nb_etages }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formF.toiture.errors %}has-warning has-feedback{% endif %}">
+                        <label>Type de toiture <small>(requis)</small></label>
+                        {{ formF.toiture }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formF.toiture.errors %}has-warning has-feedback{% endif %}">
+                        <label>Surface de toiture <small>(requis)</small></label>
+                        {{ formF.surface }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formG.nb_batiment.errors %}has-warning has-feedback{% endif %}">
+                        <label>Nombre de bâtiments <small>(requis)</small></label>
+                        {{ formG.nb_batiment }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="address">
+            <h5 class="info-text"> Informations sur l'énergie </h5>
+            <p class="info-text"> Merci de vous munir d'une facture de votre fournisseur d'électricité. </p>
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.installation.errors %}has-warning has-feedback{% endif %}">
+                        <label>Installation électrique <small>(requis)</small></label>
+                        {{ formD.installation }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.puissance.errors %}has-warning has-feedback{% endif %}">
+                        <label>Puissance souscrite (kVA) <small>(requis)</small></label>
+                        {{ formH.puissance }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.reference.errors %}has-warning has-feedback{% endif %}">
+                        <label>Référence de la facture <small>(requis)</small></label>
+                        {{ formH.reference }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.nb_kW.errors %}has-warning has-feedback{% endif %}">
+                        <label>Consommation (kWh) <small>(requis)</small></label>
+                        {{ formH.nb_kW }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                        <label>Montant de la facture (€) <small>(requis)</small></label>
+                        {{ formH.facture }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="mobilite">
+            <h5 class="info-text"> Informations générales sur la mobilité </h5>
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.installation.errors %}has-warning has-feedback{% endif %}">
+                        <label>Nombre de véhicules citadins <small>(requis)</small></label>
+                        {{ formI.vehicule_fonction }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.puissance.errors %}has-warning has-feedback{% endif %}">
+                        <label>kilométrage (km / véhicule / an) <small>(requis)</small></label>
+                        {{ formI.km_an_vehicule_fonction }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.reference.errors %}has-warning has-feedback{% endif %}">
+                        <label>Nombre de véhicules utilitaires <small>(requis)</small></label>
+                        {{ formI.vehicule_utilitaire }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.nb_kW.errors %}has-warning has-feedback{% endif %}">
+                        <label>kilométrage (km / véhicule / an) <small>(requis)</small></label>
+                        {{ formI.km_an_vehicule_utilitaire }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                        <label>Présence d'un parking <small>(requis)</small></label>
+                        {{ formI.parking }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                        <label>Accessibilité du parking <small>(requis)</small></label>
+                        {{ formI.acces }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                        <label>Désirez vous une option borne ? <small>(requis)</small></label>
+                        {{ formI.borne }}
+                    </div>
+                </div>
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="form-group {% if formH.facture.errors %}has-warning has-feedback{% endif %}">
+                        <label>Nombre de points de charge <small>(requis)</small></label>
+                        {{ formI.pt_de_charge }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+    <div class="wizard-footer">
+        <div class="pull-right">
+            <input type='button' class='btn btn-next btn-fill btn-sucess btn-wd' name='next' value='Next' />
+            <input type='submit' class='btn btn-finish btn-fill btn-sucess btn-wd' name='finish' value='Finish' />
+        </div>
+
+        <div class="pull-left">
+            <input type='button' class='btn btn-previous btn-default btn-wd' name='previous' value='Previous' />
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</form>
+
+{% endblock %}
