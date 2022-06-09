@@ -618,10 +618,14 @@ def personnalise(request, id_enseigne):
     global formP2
     global formC
 
+    global id_courbe
+
     rqt1 = Enseigne.objects.get(pk=id_enseigne)
     site = 1
     bat = Batiment.objects.get(enseigne=rqt1, num_sites=site)
     projet = rqt1.projet
+
+    id_courbe = CourbeChargePerso.objects.filter(projet=projet).last().id
 
     if request.method == "POST":
         formP1 = ProfilPersoForm()
@@ -681,10 +685,11 @@ def personnalise(request, id_enseigne):
         formP2 = ProfilPersoForm()
         formC = CourbeChargePersoForm()
 
-    graph = [5]*24
     if CourbeChargePerso.objects.filter(projet=projet).exists():
-        courbe = CourbeChargePerso.objects.filter(projet=projet)[0]
-        graph = courbe.coeffs
+        courbe = CourbeChargePerso.objects.filter(projet=projet).last()
+    else:
+        courbe = CourbeDeCharge.objects.all().last()
+    graph = courbe.coeffs[1:]
 
     return render(request, 'wizard-personnalise.html', {'graph': graph, 'id_enseigne': id_enseigne, 'formP1': formP1, 'formP2': formP2, 'formC': formC, 'projet': projet})
 

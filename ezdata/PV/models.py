@@ -478,10 +478,12 @@ class CourbeDeCharge(models.Model):
 class CourbeChargePerso(models.Model):
     projet = models.ForeignKey(
         Projet, verbose_name='Projet', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, verbose_name='Nom du profil')
+    name = models.CharField(
+        max_length=255, verbose_name='Nom du profil', default='-')
     types = (('Ouvré', 'Ouvré'),
              ('Weekend', 'Weekend'),)
-    type = models.CharField(max_length=255, choices=types, verbose_name='Jour')
+    type = models.CharField(max_length=255, choices=types,
+                            verbose_name='Jour', default='Ouvré')
 
     coeff_0 = models.FloatField(verbose_name='00:00 (%)', default=20)
     coeff_1 = models.FloatField(verbose_name='01:00 (%)', default=20)
