@@ -40,11 +40,10 @@ class LocalisationForm(ModelForm):
 class EnseigneForm(ModelForm):
     class Meta:
         model = Enseigne
-        fields = ('projet', 'name', 'secteur', 'nb_sites', 'effectif')
+        fields = ('projet', 'name', 'secteur', 'effectif')
         widget = {'Projet': forms.Select(attrs={'class': 'form-control'}),
                   "Nom de l'enseigne": forms.Select(attrs={'class': 'form-control', 'placeholder': "Nom de l'enseigne"}),
                   'Secteur': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Services'}),
-                  'Nombre de sites': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '6'}),
                   'Effectif': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '55'}),
                   }
 
@@ -54,7 +53,6 @@ class EnseigneForm(ModelForm):
             field.widget.attrs['class'] = 'form-control'
         self.fields['name'].widget.attrs['placeholder'] = "Nom de l'enseigne"
         self.fields['secteur'].widget.attrs['placeholder'] = 'Services'
-        self.fields['nb_sites'].widget.attrs['placeholder'] = '6'
         self.fields['effectif'].widget.attrs['placeholder'] = '55'
 
 
@@ -108,7 +106,7 @@ class ProfilPersoForm(ModelForm):
     class Meta:
         model = ProfilPerso
         fields = ('profil',)
-        widget = {'Profil': forms.Select(attrs={'class': 'form-control'}),
+        widget = {'profil': forms.Select(attrs={'class': 'form-control'}),
                   }
 
     def __init__(self, *args, **kwargs):

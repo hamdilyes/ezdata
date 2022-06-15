@@ -13,6 +13,8 @@ urlpatterns = [
     path('<int:id_enseigne>/batiments', views.batiments, name='batiments'),
     path('<int:id_enseigne>/personnalise',
          views.personnalise, name='personnalise'),
+    path('<int:id_enseigne>/profilperso',
+         views.profilperso, name='profilperso'),
     path('<int:id_enseigne>/energie', views.energie, name='energie'),
     path('<int:id_enseigne>/mobilite', views.mobilite, name='mobilite'),
 

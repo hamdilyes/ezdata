@@ -10,7 +10,7 @@ class ModulesPV(models.Model):
     Nom = models.CharField(max_length=100)
     Puissance_modulaire_kW = models.FloatField(
         verbose_name='Puissance Modulaire (kWc)')
-    Surface_Panneau_m2 = models.FloatField(verbose_name='Surface (m2)')
+    Surface_Panneau_m2 = models.FloatField(verbose_name='Surface (m²)')
     Cout = models.FloatField(verbose_name="Coût d'achat € ")
 
     def __str__(self):
@@ -264,7 +264,8 @@ class Enseigne(models.Model):
         Projet, on_delete=models.SET_DEFAULT, default=projet_defaut.id)
     name = models.CharField(verbose_name="Nom de l'enseigne", max_length=255)
     secteur = models.CharField(verbose_name='Secteur', max_length=255)
-    nb_sites = models.PositiveIntegerField(verbose_name='Nombre de sites')
+    nb_sites = models.PositiveIntegerField(
+        verbose_name='Nombre de sites', default=1)
     effectif = models.PositiveIntegerField(verbose_name='Effectif')
 
     # client = models.ForeignKey(
@@ -485,30 +486,30 @@ class CourbeChargePerso(models.Model):
     type = models.CharField(max_length=255, choices=types,
                             verbose_name='Jour', default='Ouvré')
 
-    coeff_0 = models.FloatField(verbose_name='00:00 (%)', default=20)
-    coeff_1 = models.FloatField(verbose_name='01:00 (%)', default=20)
-    coeff_2 = models.FloatField(verbose_name='02:00', default=20)
-    coeff_3 = models.FloatField(verbose_name='03:00', default=20)
-    coeff_4 = models.FloatField(verbose_name='04:00', default=20)
-    coeff_5 = models.FloatField(verbose_name='05:00', default=20)
-    coeff_6 = models.FloatField(verbose_name='06:00', default=20)
-    coeff_7 = models.FloatField(verbose_name='07:00', default=20)
-    coeff_8 = models.FloatField(verbose_name='08:00', default=20)
-    coeff_9 = models.FloatField(verbose_name='09:00', default=20)
-    coeff_10 = models.FloatField(verbose_name='10:00', default=20)
-    coeff_11 = models.FloatField(verbose_name='11:00', default=20)
-    coeff_12 = models.FloatField(verbose_name='12:00', default=20)
-    coeff_13 = models.FloatField(verbose_name='13:00', default=20)
-    coeff_14 = models.FloatField(verbose_name='14:00', default=20)
-    coeff_15 = models.FloatField(verbose_name='15:00', default=20)
-    coeff_16 = models.FloatField(verbose_name='16:00', default=20)
-    coeff_17 = models.FloatField(verbose_name='17:00', default=20)
-    coeff_18 = models.FloatField(verbose_name='18:00', default=20)
-    coeff_19 = models.FloatField(verbose_name='19:00', default=20)
+    coeff_0 = models.FloatField(verbose_name='00:00 (%)', default=19)
+    coeff_1 = models.FloatField(verbose_name='01:00 (%)', default=18)
+    coeff_2 = models.FloatField(verbose_name='02:00', default=18)
+    coeff_3 = models.FloatField(verbose_name='03:00', default=19)
+    coeff_4 = models.FloatField(verbose_name='04:00', default=18)
+    coeff_5 = models.FloatField(verbose_name='05:00', default=19)
+    coeff_6 = models.FloatField(verbose_name='06:00', default=27)
+    coeff_7 = models.FloatField(verbose_name='07:00', default=50)
+    coeff_8 = models.FloatField(verbose_name='08:00', default=71)
+    coeff_9 = models.FloatField(verbose_name='09:00', default=92)
+    coeff_10 = models.FloatField(verbose_name='10:00', default=100)
+    coeff_11 = models.FloatField(verbose_name='11:00', default=93)
+    coeff_12 = models.FloatField(verbose_name='12:00', default=87)
+    coeff_13 = models.FloatField(verbose_name='13:00', default=81)
+    coeff_14 = models.FloatField(verbose_name='14:00', default=83)
+    coeff_15 = models.FloatField(verbose_name='15:00', default=83)
+    coeff_16 = models.FloatField(verbose_name='16:00', default=69)
+    coeff_17 = models.FloatField(verbose_name='17:00', default=44)
+    coeff_18 = models.FloatField(verbose_name='18:00', default=25)
+    coeff_19 = models.FloatField(verbose_name='19:00', default=22)
     coeff_20 = models.FloatField(verbose_name='20:00', default=20)
-    coeff_21 = models.FloatField(verbose_name='21:00', default=20)
-    coeff_22 = models.FloatField(verbose_name='22:00', default=20)
-    coeff_23 = models.FloatField(verbose_name='23:00', default=20)
+    coeff_21 = models.FloatField(verbose_name='21:00', default=18)
+    coeff_22 = models.FloatField(verbose_name='22:00', default=18)
+    coeff_23 = models.FloatField(verbose_name='23:00', default=18)
 
     # attribut coeffs pour récupérer la liste des coefficients (en %) de la courbe de charge
     def _coeffs(self):
