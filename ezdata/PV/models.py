@@ -526,9 +526,14 @@ class CourbeChargePerso(models.Model):
 
 class ProfilPerso(models.Model):
     profil = models.ForeignKey(
-        CourbeChargePerso, verbose_name='Profil personnalisé', on_delete=models.CASCADE)
+        CourbeChargePerso, verbose_name='Profil personnalisé', on_delete=models.CASCADE, blank=True, null=True)
     batiment = models.ForeignKey(
         Batiment, on_delete=models.CASCADE, verbose_name='Batiment')
+
+    def _type(self):
+        t = self.profil.type
+        return t
+    type = property(_type)
 
 
 class Toiture(models.Model):

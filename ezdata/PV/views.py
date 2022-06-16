@@ -617,8 +617,6 @@ def batiments(request, id_enseigne):
 
 @login_required
 def personnalise(request, id_enseigne):
-    global formP1
-    global formP2
     global formC
 
     rqt1 = Enseigne.objects.get(pk=id_enseigne)
@@ -627,8 +625,6 @@ def personnalise(request, id_enseigne):
     projet = rqt1.projet
 
     if request.method == "POST":
-        formP1 = ProfilPersoForm()
-        formP2 = ProfilPersoForm()
         formC = CourbeChargePersoForm()
 
         if 'Enregistrer' in request.POST:
@@ -655,46 +651,19 @@ def personnalise(request, id_enseigne):
             url = reverse('profilperso', kwargs={'id_enseigne': id_enseigne})
             return HttpResponseRedirect(url)
 
-        # if 'Suivant' in request.POST:
-        #     formPr1 = ProfilPersoForm(data=request.POST)
-        #     formPr2 = ProfilPersoForm(data=request.POST)
-
-        #     formPr1_valid = formPr1.is_valid()
-        #     formPr2_valid = formPr2.is_valid()
-
-        #     if formPr1_valid and formPr2_valid:
-        #         prof1 = formPr1.save(commit=False)
-        #         prof2 = formPr2.save(commit=False)
-
-        #         prof1.batiment = bat
-        #         prof2.batiment = bat
-
-        #         formPr1.save()
-        #         formPr2.save()
-
-        #         url = reverse('energie', kwargs={'id_enseigne': id_enseigne})
-        #         return HttpResponseRedirect(url)
-
-        #     else:
-        #         messages.error(request, 'Error')
-        #         print(formPr1.errors)
-        #         print(formPr2.errors)
-
         if 'Précédent' in request.POST:
             url = reverse('batiments', kwargs={
                 'id_enseigne': id_enseigne})
             return HttpResponseRedirect(url)
 
     else:
-        formP1 = ProfilPersoForm()
-        formP2 = ProfilPersoForm()
         formC = CourbeChargePersoForm()
 
     courbe = CourbeDeCharge.objects.get(
         profil=Profil_types.objects.get(type_profil='Tertiaire'), type='Ouvré')
     graph = courbe.coeffs[1:]
 
-    return render(request, 'wizard-personnalise.html', {'graph': graph, 'id_enseigne': id_enseigne, 'formP1': formP1, 'formP2': formP2, 'formC': formC, 'projet': projet})
+    return render(request, 'wizard-personnalise.html', {'graph': graph, 'id_enseigne': id_enseigne, 'formC': formC, 'projet': projet})
 
 
 @login_required
@@ -711,42 +680,28 @@ def profilperso(request, id_enseigne):
         formP1 = ProfilPersoForm()
         formP2 = ProfilPersoForm()
 
-        # if 'Suivant' in request.POST:
-        #     formPr1 = ProfilPersoForm(data=request.POST)
-        #     formPr2 = ProfilPersoForm(data=request.POST)
-
-        #     formPr1_valid = formPr1.is_valid()
-        #     formPr2_valid = formPr2.is_valid()
-
-        #     if formPr1_valid and formPr2_valid:
-        #         prof1 = formPr1.save(commit=False)
-        #         prof2 = formPr2.save(commit=False)
-
-        #         prof1.batiment = bat
-        #         prof2.batiment = bat
-
-        #         formPr1.save()
-        #         formPr2.save()
-
-        #         url = reverse('energie', kwargs={'id_enseigne': id_enseigne})
-        #         return HttpResponseRedirect(url)
-
-        #     else:
-        #         messages.error(request, 'Error')
-        #         print(formPr1.errors)
-        #         print(formPr2.errors)
+        print(request.POST)
 
         if 'Suivant' in request.POST:
             formPr1 = ProfilPersoForm(data=request.POST)
+            formPr2 = ProfilPersoForm(data=request.POST)
 
             formPr1_valid = formPr1.is_valid()
+            formPr2_valid = formPr2.is_valid()
 
-            if formPr1_valid:
+            print(formPr1['profil'].value())
+
+            ProfilPerso.objects.filter(batiment=bat).delete()
+
+            if formPr1_valid and formPr2_valid:
                 prof1 = formPr1.save(commit=False)
+                prof2 = formPr2.save(commit=False)
 
                 prof1.batiment = bat
+                prof2.batiment = bat
 
                 formPr1.save()
+                formPr2.save()
 
                 url = reverse('energie', kwargs={'id_enseigne': id_enseigne})
                 return HttpResponseRedirect(url)
@@ -754,6 +709,26 @@ def profilperso(request, id_enseigne):
             else:
                 messages.error(request, 'Error')
                 print(formPr1.errors)
+                print(formPr2.errors)
+
+        # if 'Suivant' in request.POST:
+        #     formPr1 = ProfilPersoForm(data=request.POST)
+
+        #     formPr1_valid = formPr1.is_valid()
+
+        #     if formPr1_valid:
+        #         prof1 = formPr1.save(commit=False)
+
+        #         prof1.batiment = bat
+
+        #         formPr1.save()
+
+        #         url = reverse('energie', kwargs={'id_enseigne': id_enseigne})
+        #         return HttpResponseRedirect(url)
+
+        #     else:
+        #         messages.error(request, 'Error')
+        #         print(formPr1.errors)
 
         if 'Précédent' in request.POST:
             url = reverse('batiments', kwargs={

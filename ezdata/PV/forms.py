@@ -106,7 +106,7 @@ class ProfilPersoForm(ModelForm):
     class Meta:
         model = ProfilPerso
         fields = ('profil',)
-        widget = {'profil': forms.Select(attrs={'class': 'form-control'}),
+        widget = {'profil': forms.Select(attrs={'class': 'form-control'})
                   }
 
     def __init__(self, *args, **kwargs):
