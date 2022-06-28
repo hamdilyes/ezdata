@@ -2,10 +2,9 @@
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.db import transaction
 from django.contrib import messages
-from django.http import HttpResponse
 
 from .catalogue import *
 from .custom_centrale import *
@@ -26,17 +25,12 @@ from .catalogue import *
 from .gps import *
 
 # importing the necessary libraries
-from django.http import HttpResponse
-from django.views.generic import View
-from .process import html_to_pdf
-from django.template.loader import render_to_string
-from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
 from django.contrib.auth.decorators import login_required
 
-import os
+import xlwt
 
 # Creating a class based view
 
@@ -181,125 +175,6 @@ etat_revente = False
 
 def welcome(request):
     return render(request, 'welcome.html')
-
-
-# @ transaction.non_atomic_requests
-# def base(request):
-#     batiment = Batiment.objects.get(id=184)
-#     rqt0 = Profil.objects.get(batiment=batiment)
-#     profil = rqt0.type_profil
-#     profil = Profil_types.objects.get(profil=rqt0)
-#     territ = Ensolleilement.objects.get(territ='Guadeloupe')
-
-#     centrale = solution(panneau, 115.07, profil, territ, 200,
-#                         'Triphasée', 150, False, False, False)[0]
-
-#     print(centrale)
-
-#     test = Economies_pv(panneau, 115.07, profil, territ, 200, 'Triphasée', 150, 6000,
-#                         'Annuelle', 2700, 2, 'BTP', False, False, False)
-#     print(test)
-#     template = loader.get_template('base.html')
-#     return HttpResponse(template.render(request=request))
-
-
-@ transaction.non_atomic_requests
-def clients(request):
-    global formA
-    global formB
-    global formC
-    global formD
-    global formE
-    global formF
-    global formG
-    global formH
-    global formI
-
-    if request.method == 'POST':
-        form_client = ClientForm(data=request.POST)
-        form_enseigne = EnseigneForm(data=request.POST)
-        form_loca = LocalisationForm(data=request.POST)
-        form_elec = ElectrificationForm(data=request.POST)
-        form_profil = ProfilForm(data=request.POST)
-        form_batiment = BatimentForm(data=request.POST)
-        form_toiture = ToitureForm(data=request.POST)
-        form_edf = SouscriptionForm(data=request.POST)
-        form_mobilite = MobiliteForm(data=request.POST)
-
-        form_client_valid = form_client.is_valid()
-        form_enseigne_valid = form_enseigne.is_valid()
-        form_loca_valid = form_loca.is_valid()
-        form_elec_valid = form_elec.is_valid()
-        form_profil_valid = form_profil.is_valid()
-        form_batiment_valid = form_batiment.is_valid()
-        form_toiture_valid = form_toiture.is_valid()
-        form_EDF_valid = form_edf.is_valid()
-        form_mobilite_valid = form_mobilite.is_valid()
-
-        # Verification de la validité des données
-        if (form_client_valid and form_batiment_valid and form_loca_valid and form_elec_valid and
-                form_profil_valid and form_toiture_valid and form_enseigne_valid and form_EDF_valid and form_mobilite_valid):
-
-            instance = form_client.save()
-            instance1 = form_enseigne.save(commit=False)
-            instance2 = form_batiment.save(commit=False)
-            instance3 = form_loca.save(commit=False)
-            instance4 = form_elec.save(commit=False)
-            instance5 = form_profil.save(commit=False)
-            instance6 = form_toiture.save(commit=False)
-            instance7 = form_edf.save(commit=False)
-            instance8 = form_mobilite.save(commit=False)
-
-            instance1.client = instance
-            instance2.enseigne = instance1
-            instance3.batiment = instance2
-            instance4.souscription = instance7
-            instance5.batiment = instance2
-            instance6.batiment = instance2
-            instance7.batiment = instance2
-            instance8.batiment = instance2
-
-            form_enseigne.save()
-            form_batiment.save()
-            form_loca.save()
-            form_edf.save()
-            form_elec.save()
-            form_profil.save()
-            form_toiture.save()
-            form_mobilite.save()
-
-            # Enregistrer toutes les infos du client pour les utiliser dans les autres vues
-            request.session['nom_entreprise'] = form_client.cleaned_data['nom_entreprise']
-            nom = request.session['nom_entreprise']
-
-            return batiments(request)
-        else:
-            # messages.error(request, "Error")
-            print(form_client.errors)
-            print(form_batiment.errors)
-            print(form_loca.errors)
-            print(form_elec.errors)
-            print(form_profil.errors)
-            print(form_batiment.errors)
-            print(form_toiture.errors)
-            print(form_edf.errors)
-            print(form_mobilite.errors)
-
-    else:
-        formA = ClientForm()
-        formB = EnseigneForm()
-        formC = LocalisationForm()
-        formD = ElectrificationForm()
-        formE = ProfilForm()
-        formF = ToitureForm()
-        formG = BatimentForm()
-        formH = SouscriptionForm()
-        formI = MobiliteForm()
-
-    return render(request, 'home.html', {'formA': formA, 'formB': formB,
-                                         'formC': formC, 'formD':  formD,
-                                         'formE': formE, 'formF': formF,
-                                         'formG': formG, 'formH': formH, 'formI': formI})
 
 
 @login_required
@@ -3172,3 +3047,51 @@ def data_multi_sites(id_enseigne):
         emission_sans_action = (emission_sans_action_sum/total)*100
 
     return Economique_mde, Economique_pv, Economique_mobilite, Total_Economique, Environnement_mde, Environnement_pv, Environnement_mobilite, Total_Environnement, Energie_mde, Energie_pv, Total_Energie, coeff_un, coeff_deux, coeff_trois, emission_sans_action
+
+
+def export_xls(request, id_projet):
+    # content-type of response
+    response = HttpResponse(content_type='application/ms-excel')
+
+    projet = Projet.objects.get(pk=id_projet)
+    filename = str(projet.name)+'.xls'
+
+    # decide file name
+    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+
+    # creating workbook
+    wb = xlwt.Workbook(encoding='utf-8')
+
+    # adding sheet
+    ws = wb.add_sheet("Multisite")
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    # headers are bold
+    font_style.font.bold = True
+
+    # column header names, you can use your own headers here
+    columns = ['Nom du site', ]
+
+    nb_cols = len(columns)
+
+    # write column headers in sheet
+    for col_num in range(nb_cols):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    sites = ExportSite.objects.filter(projet=projet)
+
+    data = [s.export for s in sites]
+
+    for my_row in data:
+        row_num = row_num + 1
+        for i in range(nb_cols):
+            ws.write(row_num, i, my_row[i], font_style)
+
+    wb.save(response)
+    return response

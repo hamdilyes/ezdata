@@ -1,4 +1,6 @@
-from django.http import HttpResponseRedirect
+from django.utils.encoding import smart_str
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView
@@ -12,7 +14,26 @@ from PV.models import *
 from .forms import *
 from PV.forms import *
 
-from django.contrib.auth.decorators import login_required
+import xlwt
+import csv
+
+# Students name
+NAME = ['Riya', 'Suzzane', 'George', 'Zoya', 'Smith', 'Henry']
+# QUIZ Subject
+SUBJECT = ['CHE', 'PHY', 'CHE', 'BIO', 'ENG', 'ENG']
+
+
+def psg(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse('text/csv')
+    response['Content-Disposition'] = 'attachment; filename=quiz.csv'
+# Create the CSV writer using the HttpResponse as the "file"
+    writer = csv.writer(response)
+    writer.writerow(['Student Name', 'Quiz Subject'])
+    for (name, sub) in zip(NAME, SUBJECT):
+        writer.writerow([name, sub])
+
+    return response
 
 
 # Create your views here.
@@ -76,7 +97,7 @@ def profile(request, id_projet):
         enseignes = []
         nb_enseignes = 0
 
-    return render(request, 'users/templates/profile.html', {'enseignes': enseignes, 'nom_entreprise': nom_entreprise, 'email': email, 'nb_enseignes': nb_enseignes, 'results_ok': results_ok, 'projet_name': projet_name})
+    return render(request, 'users/templates/profile.html', {'enseignes': enseignes, 'nom_entreprise': nom_entreprise, 'email': email, 'nb_enseignes': nb_enseignes, 'results_ok': results_ok, 'projet_name': projet_name, 'id_projet': id_projet})
 
 
 @login_required
@@ -139,3 +160,21 @@ def addproject(request):
         formP = ProjetForm()
 
     return render(request, 'wizard-create-project.html', {'formP': formP, 'nom_entreprise': nom_entreprise})
+
+
+# def export_csv(request):
+#     # Students name
+#     NAME = ['Riya', 'Suzzane', 'George', 'Zoya', 'Smith', 'Henry']
+#     # QUIZ Subject
+#     SUBJECT = ['CHE', 'PHY', 'CHE', 'BIO', 'ENG', 'ENG']
+
+#     # Create the HttpResponse object with the appropriate CSV header.
+#     response = HttpResponse()
+#     response['Content-Disposition'] = 'attachment; filename=quiz.csv'
+#     # Create the CSV writer using the HttpResponse as the "file"
+#     writer = csv.writer(response)
+#     writer.writerow(['Student Name', 'Quiz Subject'])
+#     for (name, sub) in zip(NAME, SUBJECT):
+#         writer.writerow([name, sub])
+
+#     return response

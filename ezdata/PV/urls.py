@@ -34,5 +34,7 @@ urlpatterns = [
     path('<int:id>/<str:centrale>/<str:batterie>/devis',
          admin_views.devis, name='devis'),
 
+    path('<int:id_projet>/xls', views.export_xls, name='xls'),
+
 ]
 urlpatterns += staticfiles_urlpatterns()

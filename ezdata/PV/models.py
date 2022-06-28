@@ -283,6 +283,28 @@ class Enseigne(models.Model):
         verbose_name = "Site"
 
 
+class ExportSite(models.Model):
+    projet = models.ForeignKey(
+        Projet, on_delete=models.CASCADE, verbose_name='Projet')
+    enseigne = models.ForeignKey(
+        Enseigne, on_delete=models.CASCADE, verbose_name='Enseigne')
+
+    def _sitename(self):
+        return self.enseigne.name
+    sitename = property(_sitename)
+
+    # # # # #
+    # # # # #
+
+    def __str__(self):
+        return 'Export - '+str(self.sitename)
+
+    def _export(self):
+        export = list(model_to_dict(self).values())
+        return export[3:]
+    export = property(_export)
+
+
 class Batiment(models.Model):
 
     type_b = [

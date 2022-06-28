@@ -7,7 +7,7 @@
     <div class="container px-4 px-lg-5 h-100">
 
         <div class="row">
-            <div class="col-md-4 offset-4 mr-auto ml-auto">
+            <div class="col-md-6 offset-3 mr-auto ml-auto">
                 <div class="card ">
                     <div class="card-header ">
                         <center>
@@ -15,7 +15,12 @@
                         </center>
                     </div>
                     <div class="card-body ">
-                        <p style="text-align:center">{{ nb_enseignes }} études</p>
+                        <center>
+                            <p style="text-align:center"> <a class="font-weight-bold" href="">
+                                    Multi-Sites</a> | {{ nb_enseignes }} études | <a class="font-weight-bold"
+                                    href="{% url 'xls' id_projet %}">
+                                    Export</a></p>
+                        </center>
                     </div>
                     <div class="card-footer">
                         <center>
