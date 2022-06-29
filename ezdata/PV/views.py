@@ -908,8 +908,16 @@ def results_catalogue(request, id_enseigne):
     site = 1
 
     rqt1 = Enseigne.objects.get(id=id_enseigne)
-
     nb = rqt1.nb_sites
+    projet = rqt1.projet
+
+    if not ExportSite.objects.filter(enseigne=rqt1).exists():
+        exportsite = ExportSite(
+            projet=projet, enseigne=rqt1, sitename=rqt1.name)
+        exportsite.save()
+
+    else:
+        exportsite = ExportSite.objects.get(enseigne=rqt1)
 
     range_nb = range(nb)
 
@@ -968,6 +976,7 @@ def results_catalogue(request, id_enseigne):
 
     panneau = ModulesPV.objects.get(Nom=panneau_name)
     taille = sol.taille
+    exportsite.taille_pv = taille
     nbr_modules = panneau_qt
     surface_totale = nbr_modules*panneau.Surface_Panneau_m2
 
@@ -1029,6 +1038,8 @@ def results_catalogue(request, id_enseigne):
 
     gt = round(dimensionnement_potentiel_centrale_autoconso(
         conso_perso, profil, territ), 2)
+
+    exportsite.save()
 
     if 'Précédent' in request.POST:
         url = reverse('mobilite', kwargs={'id_enseigne': id_enseigne})
@@ -1396,8 +1407,16 @@ def factu_catalogue(request, id_enseigne):
     site = 1
 
     rqt1 = Enseigne.objects.get(id=id_enseigne)
-
     nb = rqt1.nb_sites
+    projet = rqt1.projet
+
+    if not ExportSite.objects.filter(enseigne=rqt1).exists():
+        exportsite = ExportSite(
+            projet=projet, enseigne=rqt1, sitename=rqt1.name)
+        exportsite.save()
+
+    else:
+        exportsite = ExportSite.objects.get(enseigne=rqt1)
 
     range_nb = range(nb)
 
@@ -1470,6 +1489,10 @@ def factu_catalogue(request, id_enseigne):
     p2 = round(p2, 2)
     p3 = round(p3, 2)
     p4 = round(p4, 2)
+
+    exportsite.invest_pv = p4
+
+    exportsite.save()
 
     if 'Précédent' in request.POST:
         url = reverse('mobilite', kwargs={'id_enseigne': id_enseigne})
@@ -2002,8 +2025,17 @@ def bilan_catalogue(request, id_enseigne):
     site = 1
 
     rqt1 = Enseigne.objects.get(id=id_enseigne)
-
     nb = rqt1.nb_sites
+
+    projet = rqt1.projet
+
+    if not ExportSite.objects.filter(enseigne=rqt1).exists():
+        exportsite = ExportSite(
+            projet=projet, enseigne=rqt1, sitename=rqt1.name)
+        exportsite.save()
+
+    else:
+        exportsite = ExportSite.objects.get(enseigne=rqt1)
 
     range_nb = range(nb)
 
@@ -2075,12 +2107,17 @@ def bilan_catalogue(request, id_enseigne):
     Economique_mde = round(Economies_mde[0][2]/20*Nb_batiment, 2)
     Economique_pv = round(Economies_PV[0][2]/20*Nb_batiment, 2)
     Economique_mobilite = round((Economies_Mobilite[0][2]/20), 2)
+    exportsite.eco_mde = Economique_mde
+    exportsite.eco_pv = Economique_pv
     Total_Economique = round(
         Economique_mde+Economique_pv+Economique_mobilite, 2)
 
     Environnement_mde = round(Economies_mde[2][2]/20*Nb_batiment, 2)
     Environnement_pv = round(Economies_PV[2][2]/20*Nb_batiment, 2)
     Environnement_mobilite = round(Economies_Mobilite[1][2]/20, 2)
+    exportsite.env_mde = Environnement_mde
+    exportsite.env_pv = Environnement_pv
+    exportsite.env_mob = Environnement_mobilite
     Total_Environnement = round(
         Environnement_mde+Environnement_pv+Environnement_mobilite, 2)
 
@@ -2091,7 +2128,13 @@ def bilan_catalogue(request, id_enseigne):
 
     Investissement_mde = Invest(
         NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages, type, territ)
+    exportsite.invest_mde = Investissement_mde
     Investissement_mde = Investissement_mde/20
+
+    gains_ve = Economies_Mobilite[6]
+    gains_bornes = Economies_Mobilite[7]
+    exportsite.gains_ve = gains_ve
+    exportsite.revenus_bornes = gains_bornes
 
     coeff_un = round(Economies_mde[2][2]*Nb_batiment, 1)
     coeff_deux = round(Economies_PV[2][2]*Nb_batiment, 1)
@@ -2145,6 +2188,7 @@ def bilan_catalogue(request, id_enseigne):
 
     env_apres = env_avant - Total_Environnement
     env_apres = round(env_apres, 2)
+    exportsite.emission_20 = env_apres
 
     cons_apres = cons_avant - Total_Energie
     cons_apres = round(cons_apres, 2)
@@ -2155,6 +2199,7 @@ def bilan_catalogue(request, id_enseigne):
 
     env_p = (env_avant-env_apres)/env_avant*100
     env_p = round(env_p, 2)
+    exportsite.reduc_co2 = env_p
 
     cons_p = (cons_avant-cons_apres)/cons_avant*100
     cons_p = round(cons_p, 2)
@@ -2162,6 +2207,10 @@ def bilan_catalogue(request, id_enseigne):
     # gains revente de surplus moyenne annuelle sur 20 ans
     revente_surplus_moy = Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, batteries=False, centrale_autoprod=False,
                                                  centrale_entrelesdeux=False)[4]
+
+    exportsite.revenus_surplus = round(revente_surplus_moy*20, 2)
+
+    exportsite.save()
 
     if 'Précédent' in request.POST:
         url = reverse('mobilite', kwargs={'id_enseigne': id_enseigne})
@@ -3070,10 +3119,11 @@ def export_xls(request, id_projet):
 
     font_style = xlwt.XFStyle()
     # headers are bold
-    font_style.font.bold = True
+    font_style.font.bold = False
 
     # column header names, you can use your own headers here
-    columns = ['Nom du site', ]
+    columns = ['Nom du site', 'Investissement MDE',
+               'Economies MDE (€)', 'Economies MDE (kg CO2)', 'Investissement PV', 'Puissance Centrale', 'Economies PV (€)', 'Revenus Revente Surplus', 'Economies PV (kg CO2)', 'Gains avec ESCO', 'Réduction ESCO A1-A10', 'Réduction ESCO A11-A20', 'Gains sans ESCO', 'Gains transition VE', 'Revenus bornes', 'Economies Mobilité (kg CO2)', 'Réductions CO2', 'Economies €', 'Facture Electrique sur 20 ans', 'Facture Mobilité sur 20 ans', 'Facture totale sur 20 ans', 'Emissions de CO2 sur 20 ans']
 
     nb_cols = len(columns)
 
@@ -3082,7 +3132,12 @@ def export_xls(request, id_projet):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
     # Sheet body, remaining rows
+    al = xlwt.Alignment()
+    al.horz = xlwt.Alignment.HORZ_CENTER
+    al.vert = xlwt.Alignment.VERT_CENTER
+
     font_style = xlwt.XFStyle()
+    font_style.alignment = al
 
     sites = ExportSite.objects.filter(projet=projet)
 

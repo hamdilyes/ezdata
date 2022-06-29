@@ -168,7 +168,12 @@ def Differenciel(NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking, Nb_pdc_cho
                                                                    i] - Cout_vehicule_electrique_annuel[2, i]
         Differenciel_bornes[2, i] = Cout_vehicule_thermique_annuel[4, i] - Cout_vehicule_electrique_annuel[3, i] - Bornes[
             0, i] + Bornes[1, i] - Bornes[2, i]
-    return Differenciel_bornes
+
+    gains_ve = sum(Cout_vehicule_thermique_annuel[4,:]) - sum(Cout_vehicule_electrique_annuel[3,:])
+
+    gains_bornes = - sum(Bornes[0,:]) + sum(Bornes[1,:]) - sum(Bornes[2,:])
+
+    return Differenciel_bornes, gains_ve, gains_bornes
 
     ### Bilan des economies réalisables sur la mobilité ###
 
@@ -180,7 +185,7 @@ def Economies_mobilite(territ, NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparki
     rqt99 = Emisission_CO2.objects.get(territ=territ)
     Emission_CO2 = rqt99.emission
     Differenciel_bornes = Differenciel(NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking, Nb_pdc_choisi, Accessibilite_parking,
-                                       Optionborne, NbrekWhfacture, Recurrencefacture, Montantfacture, Surfacetoiture, Nbreetages)
+                                       Optionborne, NbrekWhfacture, Recurrencefacture, Montantfacture, Surfacetoiture, Nbreetages)[0]
 
     Bilan_mobilité = np.zeros((2, 3))
     # [0,0]=Economique sur 1 an en euros
@@ -218,4 +223,7 @@ def Economies_mobilite(territ, NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparki
 
     Bilan_energ = cons_avant_mob - cons_apres_mob
 
-    return Bilan_economique, Bilan_enviro, eco_avant_mob, env_avant_mob, cons_avant_mob, Bilan_energ
+    gains_ve, gains_bornes = Differenciel(NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking, Nb_pdc_choisi, Accessibilite_parking,
+                                       Optionborne, NbrekWhfacture, Recurrencefacture, Montantfacture, Surfacetoiture, Nbreetages)[1:]
+
+    return Bilan_economique, Bilan_enviro, eco_avant_mob, env_avant_mob, cons_avant_mob, Bilan_energ, gains_ve, gains_bornes

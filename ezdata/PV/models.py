@@ -1,3 +1,5 @@
+from os import environ
+from click import echo_via_pager
 from django.db import models
 from django.forms.models import model_to_dict
 
@@ -286,12 +288,15 @@ class Enseigne(models.Model):
 class ExportSite(models.Model):
     projet = models.ForeignKey(
         Projet, on_delete=models.CASCADE, verbose_name='Projet')
+
     enseigne = models.ForeignKey(
         Enseigne, on_delete=models.CASCADE, verbose_name='Enseigne')
 
-    def _sitename(self):
-        return self.enseigne.name
-    sitename = property(_sitename)
+    # # # # #
+    # # # # #
+
+    sitename = models.CharField(
+        max_length=255)
 
     # # # # #
     # # # # #
@@ -299,10 +304,39 @@ class ExportSite(models.Model):
     def __str__(self):
         return 'Export - '+str(self.sitename)
 
+    class Meta:
+        unique_together = ('enseigne',)
+
     def _export(self):
         export = list(model_to_dict(self).values())
         return export[3:]
     export = property(_export)
+
+
+labels = ['invest_mde',
+          'eco_mde',
+          'env_mde',
+          'invest_pv',
+          'taille_pv',
+          'eco_pv',
+          'revenus_surplus',
+          'env_pv',
+          'gains_esco',  # -
+          'reduc_esco_10',  # -
+          'reduc_esco_20',  # -
+          'gains_sans_esco',  # -
+          'gains_ve',
+          'revenus_bornes',
+          'env_mob',
+          'reduc_co2',
+          'eco',  # -
+          'factu_elec_20',  # -
+          'factu_mob_20',  # -
+          'factu_tot_20',  # -
+          'emission_20']
+
+for label in labels:
+    ExportSite.add_to_class(label, models.FloatField(default=0))
 
 
 class Batiment(models.Model):

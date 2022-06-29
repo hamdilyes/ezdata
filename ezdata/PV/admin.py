@@ -844,6 +844,7 @@ admin.site.register(Enseigne, EnseigneAdmin)
 
 admin.site.register(CourbeChargePerso)
 admin.site.register(ProfilPerso)
+admin.site.register(ExportSite)
 
 # # # # #
 
