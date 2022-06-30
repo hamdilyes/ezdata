@@ -313,27 +313,33 @@ class ExportSite(models.Model):
     export = property(_export)
 
 
-labels = ['invest_mde',
-          'eco_mde',
-          'env_mde',
-          'invest_pv',
-          'taille_pv',
-          'eco_pv',
-          'revenus_surplus',
-          'env_pv',
-          'gains_esco',  # -
-          'reduc_esco_10',  # -
-          'reduc_esco_20',  # -
-          'gains_sans_esco',  # -
-          'gains_ve',
-          'revenus_bornes',
-          'env_mob',
-          'reduc_co2',
-          'eco',  # -
-          'factu_elec_20',  # -
-          'factu_mob_20',  # -
-          'factu_tot_20',  # -
-          'emission_20']
+labels = [
+    # MDE sur 20 ans :
+    'invest_mde',
+    'eco_mde',
+    'env_mde',
+    # PV sur 20 ans :
+    'invest_pv',
+    'taille_pv',
+    'eco_pv',
+    'revenus_surplus',
+    'env_pv',
+    'gains_esco',  # -
+    'reduc_esco_10',  # -
+    'reduc_esco_20',  # -
+    'gains_sans_esco',  # -
+    # mobilité sur 20 ans :
+    'gains_ve',
+    'revenus_bornes',
+    'env_mob',
+    # synthèse :
+    'reduc_co2',
+    'eco',
+    # sans action :
+    'factu_elec_20',
+    'factu_mob_20',
+    'factu_tot_20',
+    'emission_20']
 
 for label in labels:
     ExportSite.add_to_class(label, models.FloatField(default=0))

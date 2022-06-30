@@ -2107,17 +2107,17 @@ def bilan_catalogue(request, id_enseigne):
     Economique_mde = round(Economies_mde[0][2]/20*Nb_batiment, 2)
     Economique_pv = round(Economies_PV[0][2]/20*Nb_batiment, 2)
     Economique_mobilite = round((Economies_Mobilite[0][2]/20), 2)
-    exportsite.eco_mde = Economique_mde
-    exportsite.eco_pv = Economique_pv
+    exportsite.eco_mde = round(Economique_mde*20, 2)
+    exportsite.eco_pv = round(Economique_pv*20, 2)
     Total_Economique = round(
         Economique_mde+Economique_pv+Economique_mobilite, 2)
 
     Environnement_mde = round(Economies_mde[2][2]/20*Nb_batiment, 2)
     Environnement_pv = round(Economies_PV[2][2]/20*Nb_batiment, 2)
     Environnement_mobilite = round(Economies_Mobilite[1][2]/20, 2)
-    exportsite.env_mde = Environnement_mde
-    exportsite.env_pv = Environnement_pv
-    exportsite.env_mob = Environnement_mobilite
+    exportsite.env_mde = round(Environnement_mde*20, 2)
+    exportsite.env_pv = round(Environnement_pv*20, 2)
+    exportsite.env_mob = round(Environnement_mobilite*20, 2)
     Total_Environnement = round(
         Environnement_mde+Environnement_pv+Environnement_mobilite, 2)
 
@@ -2128,11 +2128,11 @@ def bilan_catalogue(request, id_enseigne):
 
     Investissement_mde = Invest(
         NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages, type, territ)
-    exportsite.invest_mde = Investissement_mde
+    exportsite.invest_mde = round(Investissement_mde, 2)
     Investissement_mde = Investissement_mde/20
 
-    gains_ve = Economies_Mobilite[6]
-    gains_bornes = Economies_Mobilite[7]
+    gains_ve = round(Economies_Mobilite[6], 2)
+    gains_bornes = round(Economies_Mobilite[7], 2)
     exportsite.gains_ve = gains_ve
     exportsite.revenus_bornes = gains_bornes
 
@@ -2162,8 +2162,10 @@ def bilan_catalogue(request, id_enseigne):
     # comparer la consommation envisagée avec la conso actuelle
 
     # mobilité et électricité
-    eco_avant_mob = Economies_Mobilite[2]
-    eco_avant_elec = sum(Economies_PV[3])/20*Nb_batiment
+    eco_avant_mob = round(Economies_Mobilite[2], 2)
+    eco_avant_elec = round(sum(Economies_PV[3])/20*Nb_batiment, 2)
+    exportsite.factu_mob_20 = eco_avant_mob
+    exportsite.factu_elec_20 = eco_avant_elec
 
     env_avant_mob = Economies_Mobilite[3]
     env_avant_elec = NbrekWhannuel*Emission_CO2*Nb_batiment
@@ -2175,6 +2177,7 @@ def bilan_catalogue(request, id_enseigne):
     # avant
     eco_avant = eco_avant_mob + eco_avant_elec
     eco_avant = round(eco_avant, 2)
+    exportsite.factu_tot_20 = eco_avant
 
     env_avant = env_avant_mob + env_avant_elec
     env_avant = round(env_avant, 2)
@@ -2188,7 +2191,7 @@ def bilan_catalogue(request, id_enseigne):
 
     env_apres = env_avant - Total_Environnement
     env_apres = round(env_apres, 2)
-    exportsite.emission_20 = env_apres
+    exportsite.emission_20 = round(env_apres*20, 2)
 
     cons_apres = cons_avant - Total_Energie
     cons_apres = round(cons_apres, 2)
@@ -2209,6 +2212,9 @@ def bilan_catalogue(request, id_enseigne):
                                                  centrale_entrelesdeux=False)[4]
 
     exportsite.revenus_surplus = round(revente_surplus_moy*20, 2)
+
+    exportsite.eco = exportsite.eco_mde+exportsite.eco_pv + \
+        exportsite.gains_ve+exportsite.revenus_bornes
 
     exportsite.save()
 
@@ -3117,13 +3123,18 @@ def export_xls(request, id_projet):
     # Sheet header, first row
     row_num = 0
 
+    al = xlwt.Alignment()
+    al.horz = xlwt.Alignment.HORZ_CENTER
+    al.vert = xlwt.Alignment.VERT_CENTER
+
     font_style = xlwt.XFStyle()
     # headers are bold
     font_style.font.bold = False
+    font_style.alignment = al
 
     # column header names, you can use your own headers here
-    columns = ['Nom du site', 'Investissement MDE',
-               'Economies MDE (€)', 'Economies MDE (kg CO2)', 'Investissement PV', 'Puissance Centrale', 'Economies PV (€)', 'Revenus Revente Surplus', 'Economies PV (kg CO2)', 'Gains avec ESCO', 'Réduction ESCO A1-A10', 'Réduction ESCO A11-A20', 'Gains sans ESCO', 'Gains transition VE', 'Revenus bornes', 'Economies Mobilité (kg CO2)', 'Réductions CO2', 'Economies €', 'Facture Electrique sur 20 ans', 'Facture Mobilité sur 20 ans', 'Facture totale sur 20 ans', 'Emissions de CO2 sur 20 ans']
+    columns = ['Nom du site', 'Investissement MDE (€)',
+               'Economies MDE (€)', 'Economies MDE (kg CO2)', 'Investissement PV (€)', 'Puissance Centrale (kWc)', 'Economies PV (€)', 'Revenus Revente Surplus (€)', 'Economies PV (kg CO2)', 'Gains avec ESCO (€)', 'Réduction ESCO A1-A10 (%)', 'Réduction ESCO A11-A20 (%)', 'Gains sans ESCO (€)', 'Gains transition VE (€)', 'Revenus bornes (€)', 'Economies Mobilité (kg CO2)', 'Réductions CO2 (%)', 'Economies (€)', 'Facture Electrique sur 20 ans (€)', 'Facture Mobilité sur 20 ans (€)', 'Facture totale sur 20 ans (€)', 'Emissions de CO2 sur 20 ans (kg CO2)']
 
     nb_cols = len(columns)
 
