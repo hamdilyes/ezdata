@@ -2164,8 +2164,8 @@ def bilan_catalogue(request, id_enseigne):
     # mobilité et électricité
     eco_avant_mob = round(Economies_Mobilite[2], 2)
     eco_avant_elec = round(sum(Economies_PV[3])/20*Nb_batiment, 2)
-    exportsite.factu_mob_20 = eco_avant_mob
-    exportsite.factu_elec_20 = eco_avant_elec
+    exportsite.factu_mob_20 = round(eco_avant_mob*20, 2)
+    exportsite.factu_elec_20 = round(eco_avant_elec*20, 2)
 
     env_avant_mob = Economies_Mobilite[3]
     env_avant_elec = NbrekWhannuel*Emission_CO2*Nb_batiment
@@ -2177,10 +2177,11 @@ def bilan_catalogue(request, id_enseigne):
     # avant
     eco_avant = eco_avant_mob + eco_avant_elec
     eco_avant = round(eco_avant, 2)
-    exportsite.factu_tot_20 = eco_avant
+    exportsite.factu_tot_20 = round(eco_avant*20, 2)
 
     env_avant = env_avant_mob + env_avant_elec
     env_avant = round(env_avant, 2)
+    exportsite.emission_20 = round(env_avant*20, 2)
 
     cons_avant = cons_avant_mob + cons_avant_elec
     cons_avant = round(cons_avant, 2)
@@ -2191,7 +2192,6 @@ def bilan_catalogue(request, id_enseigne):
 
     env_apres = env_avant - Total_Environnement
     env_apres = round(env_apres, 2)
-    exportsite.emission_20 = round(env_apres*20, 2)
 
     cons_apres = cons_avant - Total_Energie
     cons_apres = round(cons_apres, 2)
