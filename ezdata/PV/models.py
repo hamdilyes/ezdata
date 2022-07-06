@@ -434,7 +434,7 @@ class Localisation(models.Model):
     batiment = models.OneToOneField(
         Batiment, on_delete=models.CASCADE, related_name='Batiment_localisation', blank=True)
 
-    adresse = models.CharField(max_length=255)
+    adresse = models.CharField(max_length=255, blank=True, null=True)
 
     #  def __str__(self):
     #    return self.territ
