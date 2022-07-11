@@ -371,15 +371,6 @@ def batiments(request, id_enseigne):
                     form_profil.save()
                     form_toiture.save()
 
-                    # id_batiment= form_batiment.id
-
-                    # Reinitialiser les formulaires
-
-                    # formC = LocalisationForm()
-                    # formE = ProfilForm()
-                    # formF = ToitureForm()
-                    # formG = BatimentForm()
-
                     etat_form = False
                     print('enregistré')
 
@@ -502,27 +493,32 @@ def personnalise(request, id_enseigne):
     if request.method == "POST":
         formC = CourbeChargePersoForm()
 
-        if 'Enregistrer' in request.POST:
+        if 'Suivant' in request.POST:
 
             formCo = CourbeChargePersoForm(data=request.POST)
             name = formCo['name'].value()
             type = formCo['type'].value()
 
-            CourbeChargePerso.objects.filter(
-                projet=projet, name=name, type=type).delete()
+            if CourbeChargePerso.objects.filter(
+                    projet=projet, name=name, type=type).exists():
+                CourbeChargePerso.objects.filter(
+                    projet=projet, name=name, type=type).delete()
 
-            formCo_valid = formCo.is_valid()
-
-            if formCo_valid:
+            if formCo.is_valid():
                 courbe1 = formCo.save(commit=False)
                 courbe1.projet = projet
                 formCo.save()
+
+                if not ProfilTypesPerso.objects.filter(type_profil=name).exists():
+                    if type == 'Ouvré':
+                        perso = ProfilTypesPerso(type_profil=name)
+                        perso.save()
 
             else:
                 messages.error(request, 'Error')
                 print(formCo.errors)
 
-        if 'Suivant' in request.POST:
+        # if 'Suivant' in request.POST:
             url = reverse('profilperso', kwargs={'id_enseigne': id_enseigne})
             return HttpResponseRedirect(url)
 
@@ -544,7 +540,6 @@ def personnalise(request, id_enseigne):
 @login_required
 def profilperso(request, id_enseigne):
     global formP1
-    global formP2
 
     rqt1 = Enseigne.objects.get(pk=id_enseigne)
     site = 1
@@ -553,30 +548,18 @@ def profilperso(request, id_enseigne):
 
     if request.method == "POST":
         formP1 = ProfilPersoForm()
-        formP2 = ProfilPersoForm()
-
-        print(request.POST)
 
         if 'Suivant' in request.POST:
             formPr1 = ProfilPersoForm(data=request.POST)
-            formPr2 = ProfilPersoForm(data=request.POST)
-
-            formPr1_valid = formPr1.is_valid()
-            formPr2_valid = formPr2.is_valid()
-
-            print(formPr1['profil'].value())
 
             ProfilPerso.objects.filter(batiment=bat).delete()
 
-            if formPr1_valid and formPr2_valid:
+            if formPr1.is_valid():
                 prof1 = formPr1.save(commit=False)
-                prof2 = formPr2.save(commit=False)
 
                 prof1.batiment = bat
-                prof2.batiment = bat
 
                 formPr1.save()
-                formPr2.save()
 
                 url = reverse('energie', kwargs={'id_enseigne': id_enseigne})
                 return HttpResponseRedirect(url)
@@ -584,37 +567,16 @@ def profilperso(request, id_enseigne):
             else:
                 messages.error(request, 'Error')
                 print(formPr1.errors)
-                print(formPr2.errors)
-
-        # if 'Suivant' in request.POST:
-        #     formPr1 = ProfilPersoForm(data=request.POST)
-
-        #     formPr1_valid = formPr1.is_valid()
-
-        #     if formPr1_valid:
-        #         prof1 = formPr1.save(commit=False)
-
-        #         prof1.batiment = bat
-
-        #         formPr1.save()
-
-        #         url = reverse('energie', kwargs={'id_enseigne': id_enseigne})
-        #         return HttpResponseRedirect(url)
-
-        #     else:
-        #         messages.error(request, 'Error')
-        #         print(formPr1.errors)
 
         if 'Précédent' in request.POST:
-            url = reverse('batiments', kwargs={
+            url = reverse('personnalise', kwargs={
                 'id_enseigne': id_enseigne})
             return HttpResponseRedirect(url)
 
     else:
         formP1 = ProfilPersoForm()
-        formP2 = ProfilPersoForm()
 
-    return render(request, 'wizard-choix-perso.html', {'id_enseigne': id_enseigne, 'formP1': formP1, 'formP2': formP2, 'projet': projet})
+    return render(request, 'wizard-choix-perso.html', {'id_enseigne': id_enseigne, 'formP1': formP1, 'projet': projet})
 
 
 @login_required
@@ -939,6 +901,9 @@ def results_catalogue(request, id_enseigne):
 
     rqt4 = Profil.objects.get(batiment=rqt2)
     profil = rqt4.type_profil
+    personnalise = Profil_types.objects.get(type_profil='Personnalisé')
+    if profil == personnalise:
+        profil = ProfilPerso.objects.get(batiment=rqt2)
 
     rqt5 = Toiture.objects.get(batiment=rqt2)
     surface1 = rqt5.surface

@@ -20,13 +20,6 @@ def courbes_de_charges_coeff(profil):
     global coeffs_ouvre
     global coeffs_weekend
 
-    #profil= str(profil.type_profil)
-    #profil1 = Profil_types.objects.get(type_profil=profil)
-    # coeffs_ouvre = list(Coeffs_Ouvres.objects.filter(
-    #     profil=profil).order_by('heure').values_list('coeff'))
-    # coeffs_weekend = list(Coeffs_Weekend.objects.filter(
-    #     profil=profil).order_by('heure').values_list('coeff'))
-
     coeffs_ouvre = CourbeDeCharge.objects.get(
         profil=profil, type="Ouvré").coeffs
 

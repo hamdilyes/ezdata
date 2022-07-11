@@ -443,10 +443,6 @@ class Localisation(models.Model):
 class Profil_types(models.Model):
     type_profil = models.CharField(verbose_name='Profil', max_length=255)
 
-    # def __str__(self):
-    #     list = [{k: str(v) for k, v in self.__dict__.items()}]
-    #     return list[0]['type_profil']
-
     class Meta:
         verbose_name = "Profil Type"
 
@@ -538,6 +534,16 @@ class CourbeDeCharge(models.Model):
         return str(self.profil) + ' - ' + str(self.type)
 
 
+class ProfilTypesPerso(models.Model):
+    type_profil = models.CharField(verbose_name='Profil', max_length=255)
+
+    class Meta:
+        verbose_name = "Profil Type Perso"
+
+    def __str__(self):
+        return str(self.type_profil)
+
+
 class CourbeChargePerso(models.Model):
     projet = models.ForeignKey(
         Projet, verbose_name='Projet', on_delete=models.CASCADE)
@@ -588,14 +594,12 @@ class CourbeChargePerso(models.Model):
 
 class ProfilPerso(models.Model):
     profil = models.ForeignKey(
-        CourbeChargePerso, verbose_name='Profil personnalisé', on_delete=models.CASCADE, blank=True, null=True)
+        ProfilTypesPerso, on_delete=models.CASCADE, default=1)
     batiment = models.ForeignKey(
         Batiment, on_delete=models.CASCADE, verbose_name='Batiment')
 
-    def _type(self):
-        t = self.profil.type
-        return t
-    type = property(_type)
+    def __str__(self):
+        return str(self.profil)+' - '+str(self.batiment)
 
 
 class Toiture(models.Model):

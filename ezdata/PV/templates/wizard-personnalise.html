@@ -26,7 +26,7 @@
         Informations génerales
       </a>
     </li>
-    <li>
+    <li class="active">
       <a href="" data-toggle="tab">
         <div class="icon-circle">
           <i class="ti-home"></i>
@@ -58,57 +58,49 @@
 <div class="tab-content">
   <h5 class="info-text">Profil personnalisé - Création</h5>
   <p class="category">
-    Merci de créer un nouveau profil (en cas de besoin).
+    Merci de créer un nouveau profil personnalisé en cas de besoin.
   </p>
   <p class="category">
-    La page suivante permet de sélectionner un profil personnalisé
+    La page suivante permet de sélectionner un profil personnalisé existant
     pour l'étude.
   </p>
 
   <hr class="divider" />
 
-  <p class="category">Créer un nouveau profil</p>
-
-  <hr class="divider" />
-
-  <form action="" method="POST" name="formC">
+  <form method="POST" name="formC">
     {% csrf_token %}
     <div class="row">
-      <div class="col-sm-5 col-sm-offset-1">
+      <div class="col-sm-4 col-sm-offset-2">
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
           <label>Nom du profil </label>
           {{ formC.name }}
         </div>
       </div>
-
-      <div class="col-sm-5">
+      <div class="col-sm-4">
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
           <label>Type </label>
           {{ formC.type }}
         </div>
       </div>
     </div>
+
     <div class="row">
-      <div class="col-sm-2 col-sm-offset-1">
+      <div class="col-sm-2">
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
           <label>00:00 </label>
           {{ formC.coeff_0 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>05:00 </label>
-          {{ formC.coeff_5 }}
+          <label>06:00 </label>
+          {{ formC.coeff_6 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>10:00 </label>
-          {{ formC.coeff_10 }}
+          <label>12:00 </label>
+          {{ formC.coeff_12 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>15:00 </label>
-          {{ formC.coeff_15 }}
-        </div>
-        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>20:00 </label>
-          {{ formC.coeff_20 }}
+          <label>18:00 </label>
+          {{ formC.coeff_18 }}
         </div>
       </div>
 
@@ -118,20 +110,16 @@
           {{ formC.coeff_1 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>06:00 </label>
-          {{ formC.coeff_6 }}
+          <label>07:00 </label>
+          {{ formC.coeff_7 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>11:00 </label>
-          {{ formC.coeff_11 }}
+          <label>13:00 </label>
+          {{ formC.coeff_13 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>16:00 </label>
-          {{ formC.coeff_16 }}
-        </div>
-        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>21:00 </label>
-          {{ formC.coeff_21 }}
+          <label>19:00 </label>
+          {{ formC.coeff_19 }}
         </div>
       </div>
 
@@ -141,20 +129,16 @@
           {{ formC.coeff_2 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>07:00 </label>
-          {{ formC.coeff_7 }}
+          <label>08:00 </label>
+          {{ formC.coeff_8 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>12:00 </label>
-          {{ formC.coeff_12 }}
+          <label>14:00 </label>
+          {{ formC.coeff_14 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>17:00 </label>
-          {{ formC.coeff_17 }}
-        </div>
-        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>22:00 </label>
-          {{ formC.coeff_22 }}
+          <label>20:00 </label>
+          {{ formC.coeff_20 }}
         </div>
       </div>
 
@@ -164,20 +148,16 @@
           {{ formC.coeff_3 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>08:00 </label>
-          {{ formC.coeff_8 }}
+          <label>09:00 </label>
+          {{ formC.coeff_9 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>13:00 </label>
-          {{ formC.coeff_13 }}
+          <label>15:00 </label>
+          {{ formC.coeff_15 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>18:00 </label>
-          {{ formC.coeff_18 }}
-        </div>
-        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>23:00 </label>
-          {{ formC.coeff_23 }}
+          <label>21:00 </label>
+          {{ formC.coeff_21 }}
         </div>
       </div>
 
@@ -187,130 +167,107 @@
           {{ formC.coeff_4 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>09:00 </label>
-          {{ formC.coeff_9 }}
+          <label>10:00 </label>
+          {{ formC.coeff_10 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>14:00 </label>
-          {{ formC.coeff_14 }}
+          <label>16:00 </label>
+          {{ formC.coeff_16 }}
         </div>
         <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
-          <label>19:00 </label>
-          {{ formC.coeff_19 }}
+          <label>22:00 </label>
+          {{ formC.coeff_22 }}
         </div>
       </div>
-      <div class="col-sm-4 col-sm-offset-9">
-        <input type="submit" class="btn btn-default btn-wd" name="Enregistrer" value="Enregistrer" />
+
+      <div class="col-sm-2">
+        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
+          <label>05:00 </label>
+          {{ formC.coeff_5 }}
+        </div>
+        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
+          <label>11:00 </label>
+          {{ formC.coeff_11 }}
+        </div>
+        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
+          <label>17:00 </label>
+          {{ formC.coeff_17 }}
+        </div>
+        <div class="form-group {% if formC.name.errors %}has-warning has-feedback{% endif %}">
+          <label>23:00 </label>
+          {{ formC.coeff_23 }}
+        </div>
       </div>
     </div>
-  </form>
 
-  <hr class="divider" />
-
-  <p class="category">Courbe de charge</p>
-
-  <hr class="divider" />
-
-  <div class="row">
-    <div class="col-md-10 col-md-offset-1">
-      <div class="card card-stats">
-        <div class="card-header"></div>
-        <div class="card-body">
-          <canvas id="line-chart" width="300" height="150"></canvas>
-          <script>
-            const chart = new Chart(document.getElementById("line-chart"), {
-              type: 'bar',
-              data: {
-                labels: [...Array(24).keys()].map(i => `${String(i).padStart(2, '0')}:00`),
-                datasets: [{
-                  data: {{ graph }},
-              type: 'line',
-              label: "Consommation du bâtiment",
-              borderColor: "#FF0000",
-              backgroundColor: "#FDFEFE",
-              fill: false,
-            }]
+    <div class="row">
+      <div class="col-md-8 col-sm-offset-2">
+        <div class="card card-stats">
+          <div class="card-header"></div>
+          <div class="card-body">
+            <canvas id="line-chart" width="300" height="150"></canvas>
+            <script>
+              const chart = new Chart(document.getElementById("line-chart"), {
+                type: 'bar',
+                data: {
+                  labels: [...Array(24).keys()].map(i => `${String(i).padStart(2, '0')}:00`),
+                  datasets: [{
+                    data: {{ graph }},
+                type: 'line',
+                label: "Consommation du bâtiment",
+                borderColor: "#FF0000",
+                backgroundColor: "#FDFEFE",
+                fill: false,
+              }]
                     },
-            options: {
-              plugins: {
-                filler: {
-                  propagate: true,
+              options: {
+                plugins: {
+                  filler: {
+                    propagate: true,
                                 }
-              },
-              responsive: true,
-                scales: {
-                x: [{
-                  stacked: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: 'Heures'
-                  }
-                }],
-                  y: [{
+                },
+                responsive: true,
+                  scales: {
+                  x: [{
                     stacked: true,
                     scaleLabel: {
                       display: true,
-                      labelString: 'kW'
+                      labelString: 'Heures'
                     }
-                  }]
-              },
+                  }],
+                    y: [{
+                      stacked: true,
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'kW'
+                      }
+                    }]
+                },
 
-              title: {
-                display: false,
-                  text: 'Profil énergétique'
-              }
-            }
-            });
-            document.querySelectorAll('input[type="number"]').forEach(
-              (e) =>
-              (e.oninput = function () {
-                const data = [];
-                for (let i = 0; i < 24; i++) {
-                  data.push(parseInt(this.form.elements[`coeff_${i}`].value));
+                title: {
+                  display: false,
+                    text: 'Profil énergétique'
                 }
-                chart.data.datasets[0].data = data;
-                chart.update();
-              })
-            );
-          </script>
+              }
+            });
+              document.querySelectorAll('input[type="number"]').forEach(
+                (e) =>
+                (e.oninput = function () {
+                  const data = [];
+                  for (let i = 0; i < 24; i++) {
+                    data.push(parseInt(this.form.elements[`coeff_${i}`].value));
+                  }
+                  chart.data.datasets[0].data = data;
+                  chart.update();
+                })
+              );
+            </script>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- <hr class="divider" />
-
-  <p class="category">Merci de sélectionner un profil personnalisé.</p>
-
-  <hr class="divider" /> -->
-
-  <!-- <div class="row">
-    <form action="" method="POST" name="formP1">
-      {% csrf_token %}
-      <div class="col-sm-5 col-sm-offset-1">
-        <div class="form-group {% if formP1.profil.errors %}has-warning has-feedback{% endif %}">
-          <label>Profil personnalisé - Jour ouvré </label>
-          {{ formP1.profil }}
-        </div>
-      </div>
-    </form>
-
-    <form action="" method="POST" name="formP2">
-      {% csrf_token %}
-      <div class="col-sm-5">
-        <div class="form-group {% if formP2.profil.errors %}has-warning has-feedback{% endif %}">
-          <label>Profil personnalisé - Weekend </label>
-          {{ formP2.profil }}
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <hr class="divider" /> -->
-
-  <div class="wizard-footer">
-    <form action="" method="POST" name="formP">
-      {% csrf_token %}
+    <div class="wizard-footer">
       <div class="pull-right">
         <input type="submit" class="btn btn-default btn-wd" name="Suivant" value="Suivant" />
       </div>
@@ -319,23 +276,9 @@
       </div>
 
       <div class="clearfix"></div>
-    </form>
-  </div>
+
+    </div>
+  </form>
 </div>
 
 {% endblock %}
-
-<script>
-  $(function () {
-    $(".tab-pane ul li.active").removeClass("active");
-    $('.nav-pills a[href="#batiments"]').tab("show"); // Select tab by name
-  });
-
-  $("#id_vehicule_fonction").change(function () {
-    if ($(this).val() <= 0) {
-      $("#id_km_an_vehicule_fonction").hide();
-    } else {
-      $("#id_km_an_vehicule_fonction").show();
-    }
-  });
-</script>
