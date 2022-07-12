@@ -582,7 +582,7 @@ class CourbeChargePerso(models.Model):
     # attribut coeffs pour récupérer la liste des coefficients (en %) de la courbe de charge
     def _coeffs(self):
         coeffs = list(model_to_dict(self).values())
-        return coeffs[3:]
+        return coeffs[4:]
     coeffs = property(_coeffs)
 
     class Meta:
