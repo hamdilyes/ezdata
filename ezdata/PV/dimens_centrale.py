@@ -1,7 +1,7 @@
 import numpy as np
 from .Input import Load_Input
 from .models import *
-from .models import CourbeDeCharge
+from .models import *
 
 # Variables statiques
 Load_Input()
@@ -15,16 +15,32 @@ Nb_jours_ouvres = 261
 # Profil personnalisé
 # Profil Mesuré
 # Dimensonnement
-def courbes_de_charges_coeff(profil):
+def courbes_de_charges_coeff(profil, perso):
     # Profil est un modèle de type Profil_types, on peut recuperer directement les paramètres.
     global coeffs_ouvre
     global coeffs_weekend
 
-    coeffs_ouvre = CourbeDeCharge.objects.get(
-        profil=profil, type="Ouvré").coeffs
+    if perso == False:
+        coeffs_ouvre = CourbeDeCharge.objects.get(
+            profil=profil, type="Ouvré").coeffs
+        if CourbeDeCharge.objects.filter(
+                profil=profil, type="Weekend").exists():
+            coeffs_weekend = CourbeDeCharge.objects.get(
+                profil=profil, type="Weekend").coeffs
+        else:
+            coeffs_weekend = CourbeDeCharge.objects.get(
+                profil=profil, type="Ouvré").coeffs
 
-    coeffs_weekend = CourbeDeCharge.objects.get(
-        profil=profil, type="Weekend").coeffs
+    elif perso == True:
+        coeffs_ouvre = CourbeChargePerso.objects.get(
+            name=profil.type_profil, type="Ouvré").coeffs
+        if CourbeChargePerso.objects.filter(
+                name=profil.type_profil, type="Weekend").exists():
+            coeffs_weekend = CourbeChargePerso.objects.get(
+                name=profil.type_profil, type="Weekend").coeffs
+        else:
+            coeffs_weekend = CourbeChargePerso.objects.get(
+                name=profil.type_profil, type="Ouvré").coeffs
 
     a = np.matrix(coeffs_ouvre).flatten()
     a = a.transpose()
@@ -34,12 +50,12 @@ def courbes_de_charges_coeff(profil):
     return a, b
 
 
-def consommation(profil):
+def consommation(profil, perso):
     # Consommation hebdo en fonction des coeffs de courbes de charges moyenne
     # Conso en kWh
     global conso
 
-    coeff_ouvre, coeff_weekend = courbes_de_charges_coeff(profil)
+    coeff_ouvre, coeff_weekend = courbes_de_charges_coeff(profil, perso)
     total_ouvre = np.sum(coeff_ouvre)
     total_weekend = np.sum(coeff_weekend)
 
@@ -51,10 +67,10 @@ def consommation(profil):
  # conso_hebdo : consommation moyenne en une semaine pour le même type de profil
 
 
-def courbe_de_charges(conso_perso, profil):
+def courbe_de_charges(conso_perso, profil, perso):
     # conso perso en une semaine
-    conso_hebdo = consommation(profil)
-    coeffs_ouvre, coeffs_weekend = courbes_de_charges_coeff(profil)
+    conso_hebdo = consommation(profil, perso)
+    coeffs_ouvre, coeffs_weekend = courbes_de_charges_coeff(profil, perso)
 
     coeffs_ouvre = 1000 * (conso_perso / conso_hebdo) * coeffs_ouvre
     coeffs_weekend = 1000 * (conso_perso / conso_hebdo) * coeffs_weekend
@@ -98,16 +114,16 @@ def pic_production(territ):
 
 
 # conso en hebdo
-def dimensionnement_potentiel_centrale_autoconso(conso_perso, profil, territ):
+def dimensionnement_potentiel_centrale_autoconso(conso_perso, profil, perso, territ):
 
-    ouvre = courbe_de_charges(conso_perso, profil)[0]
+    ouvre = courbe_de_charges(conso_perso, profil, perso)[0]
 
     extract_ouvre = ouvre[10:15]
     total_extract_ouvre = np.sum(ouvre)
     # print(total_extract_ouvre)
     min_extract_ouvre = np.min(extract_ouvre)
 
-    weekend = courbe_de_charges(conso_perso, profil)[1]
+    weekend = courbe_de_charges(conso_perso, profil, perso)[1]
     extract_weekend = weekend[10:15]
     total_extract_weekend = np.sum(weekend)
     # print(total_extract_weekend)
@@ -121,11 +137,12 @@ def dimensionnement_potentiel_centrale_autoconso(conso_perso, profil, territ):
     # resultat en kWc
 
 
-def calcul_taux_centrale_potentiel(conso_perso, profil, territ):  # conso en hebdo
+# conso en hebdo
+def calcul_taux_centrale_potentiel(conso_perso, profil, perso, territ):
     centrale_potentielle = dimensionnement_potentiel_centrale_autoconso(
-        conso_perso, profil, territ)
-    coeffs_ouvre = courbe_de_charges(conso_perso, profil)[0]
-    coeffs_weekend = courbe_de_charges(conso_perso, profil)[1]
+        conso_perso, profil, perso, territ)
+    coeffs_ouvre = courbe_de_charges(conso_perso, profil, perso)[0]
+    coeffs_weekend = courbe_de_charges(conso_perso, profil, perso)[1]
 
     Ep_moyenne = territ.Ep_moyenne  # kWh/kWc
     Ep_defavorable = territ.Ep_defavorable  # kWh/kWc

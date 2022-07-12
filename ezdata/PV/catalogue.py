@@ -5,7 +5,7 @@ from .MDE import *
 import numpy as np
 
 
-def solution_catalogue(conso_perso, profil, territ, surface, installation, puissance, batteries, centrale_autoprod,
+def solution_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                        centrale_entrelesdeux):
 
     catalogue = CatalogueSolution.objects.filter(installation=installation)
@@ -31,7 +31,7 @@ def solution_catalogue(conso_perso, profil, territ, surface, installation, puiss
     #                      centrale_entrelesdeux)[0]
 
     taille_GT = dimensionnement_potentiel_centrale_autoconso(
-        conso_perso, profil, territ)
+        conso_perso, profil, perso, territ)
 
     # batterie = solution(panneau_name, conso_perso, profil, territ, surface, installation, puissance, batteries, centrale_autoprod,
     #                     centrale_entrelesdeux)[2]
@@ -217,7 +217,7 @@ def concat_solutions(solutions_list, installation):
     return sol
 
 
-def calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface, installation, puissance, batteries, centrale_autoprod,
+def calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                                      centrale_entrelesdeux):
 
     catalogue = CatalogueSolution.objects.filter(installation=installation)
@@ -230,14 +230,14 @@ def calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface, insta
     panneau_name = modulepv.article
     panneau = ModulesPV.objects.get(Nom=panneau_name)
 
-    centrale_GT = solution_catalogue(conso_perso, profil, territ, surface, installation, puissance, batteries, centrale_autoprod,
+    centrale_GT = solution_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                                      centrale_entrelesdeux).taille
 
     # ATTENTION
     # Batterie en kWh dans les params
 
     if batteries == True:
-        Batterie = solution_catalogue(conso_perso, profil, territ, surface, installation, puissance, batteries, centrale_autoprod,
+        Batterie = solution_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                                       centrale_entrelesdeux)*1000
         Batterie = 0
         Decharge = (Batterie/2.4)*1.2
@@ -257,8 +257,8 @@ def calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface, insta
 
     Nb_jours_favorables = 365 * \
         (Ep_moyenne-Ep_defavorable) / (Ep_favorable - Ep_defavorable)
-    coeffs_ouvre = courbe_de_charges(conso_perso, profil)[0]
-    coeffs_weekend = courbe_de_charges(conso_perso, profil)[1]
+    coeffs_ouvre = courbe_de_charges(conso_perso, profil, perso)[0]
+    coeffs_weekend = courbe_de_charges(conso_perso, profil, perso)[1]
 
     for i in range(24):
         tab[i][0] = i  # Heures
@@ -411,7 +411,7 @@ def calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface, insta
     return tab, taux_autoconso_batterie, taux_autoprod_batterie, energie_autoconsommee, surplus
 
 
-def Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, batteries, centrale_autoprod,
+def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, batteries, centrale_autoprod,
                            centrale_entrelesdeux):
 
     catalogue = CatalogueSolution.objects.filter(installation=installation)
@@ -436,7 +436,7 @@ def Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, p
     NbrekWhannuel = Variables_mde(
         NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages)[2]
 
-    energie_autoconsome = calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface, installation, puissance, batteries,
+    energie_autoconsome = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries,
                                                            centrale_autoprod, centrale_entrelesdeux)[3]
 
     ancienne_conso = [NbrekWhannuel] * 20
@@ -453,7 +453,7 @@ def Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, p
         NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages, type)[2]
 
     # taille de la centrale
-    centrale_GT = solution_catalogue(conso_perso, profil, territ, surface, installation, puissance, batteries, centrale_autoprod,
+    centrale_GT = solution_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                                      centrale_entrelesdeux).taille
 
     # € / kWh
@@ -465,7 +465,7 @@ def Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, p
         prix_vente = territ.prix_coeff_1 / 100
     else:
         prix_vente = 0
-    surplus_annuel = calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface, installation, puissance, batteries, centrale_autoprod,
+    surplus_annuel = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                                                       centrale_entrelesdeux)[4]
     revente_surplus = round(surplus_annuel*prix_vente, 2)
 
@@ -510,7 +510,7 @@ def Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, p
     return Bilan_Economique, Bilan_Energétique, Bilan_Environnemental, Inaction, revente_surplus
 
 
-def Bilan1_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
+def Bilan1_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
                      Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU):
 
     rqt0 = Emisission_CO2.objects.get(territ=territ)
@@ -555,7 +555,7 @@ def Bilan1_catalogue(conso_perso, profil, territ, surface, installation, puissan
     # Bilan_avant [2,8]: Environnement : Total MDE/PV + Mobilite sur 20 ans
 
     # Tous ce qui est util :
-    Inaction = Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
+    Inaction = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
                                       Montantfacture, Nbreetages, type, batteries=False, centrale_autoprod=False,
                                       centrale_entrelesdeux=False)[3]
 

@@ -902,8 +902,10 @@ def results_catalogue(request, id_enseigne):
     rqt4 = Profil.objects.get(batiment=rqt2)
     profil = rqt4.type_profil
     personnalise = Profil_types.objects.get(type_profil='Personnalisé')
+    perso = False
     if profil == personnalise:
-        profil = ProfilPerso.objects.get(batiment=rqt2)
+        perso = True
+        profil = ProfilPerso.objects.get(batiment=rqt2).profil
 
     rqt5 = Toiture.objects.get(batiment=rqt2)
     surface1 = rqt5.surface
@@ -923,7 +925,7 @@ def results_catalogue(request, id_enseigne):
     if ref == 'Annuelle':
         conso_perso = ((Nb_kW) / 365) * 7
 
-    sol = solution_catalogue(conso_perso, profil, territ, surface1,
+    sol = solution_catalogue(conso_perso, profil, perso, territ, surface1,
                              installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)
 
     cb = CentraleBatiment(batiment=rqt2)
@@ -947,11 +949,11 @@ def results_catalogue(request, id_enseigne):
 
     # JOUR OUVRE
 
-    coeffs_ouvre = courbe_de_charges(conso_perso, profil)[0] / 1000
+    coeffs_ouvre = courbe_de_charges(conso_perso, profil, perso)[0] / 1000
     # Pour afficher les courbes dans le bon format
 
     out = np.array(coeffs_ouvre).flatten().tolist()
-    tab = calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface1,
+    tab = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface1,
                                            installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)[0]
 
     result1 = tab[:, 1] / 1000
@@ -964,7 +966,7 @@ def results_catalogue(request, id_enseigne):
 
     # WEEKEND
 
-    coeffs_ouvre1 = courbe_de_charges(conso_perso, profil)[1] / 1000
+    coeffs_ouvre1 = courbe_de_charges(conso_perso, profil, perso)[1] / 1000
     # Pour afficher les courbes dans le bon format
 
     out2 = np.array(coeffs_ouvre1).flatten().tolist()
@@ -990,10 +992,10 @@ def results_catalogue(request, id_enseigne):
     conso_reseau_weekend = conso_reseau_weekend.flatten().tolist()
 
     surface_totale = round(surface_totale, 2)
-    auto_conso = calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface1,
+    auto_conso = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface1,
                                                   installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)[1]
     auto_conso = round(auto_conso, 2)
-    auto_prod = calcul_taux_centraleGT_catalogue(conso_perso, profil, territ, surface1,
+    auto_prod = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface1,
                                                  installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)[2]
     auto_prod = round(auto_prod, 2)
 
@@ -1002,7 +1004,7 @@ def results_catalogue(request, id_enseigne):
     alerte_surface = surface_totale > surface1
 
     gt = round(dimensionnement_potentiel_centrale_autoconso(
-        conso_perso, profil, territ), 2)
+        conso_perso, profil, perso, territ), 2)
 
     exportsite.save()
 
@@ -1400,6 +1402,11 @@ def factu_catalogue(request, id_enseigne):
 
     rqt4 = Profil.objects.get(batiment=rqt2)
     profil = rqt4.type_profil
+    personnalise = Profil_types.objects.get(type_profil='Personnalisé')
+    perso = False
+    if profil == personnalise:
+        perso = True
+        profil = ProfilPerso.objects.get(batiment=rqt2)
 
     rqt5 = Toiture.objects.get(batiment=rqt2)
     surface = rqt5.surface
@@ -1420,7 +1427,7 @@ def factu_catalogue(request, id_enseigne):
     if ref == 'Annuelle':
         conso_perso = ((Nb_kW) / 365) * 7
 
-    sol = solution_catalogue(conso_perso, profil, territ, surface,
+    sol = solution_catalogue(conso_perso, profil, perso, territ, surface,
                              installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)
 
     choices = FacturationItem.objects.filter(type="Module photovoltaïque")
@@ -2041,6 +2048,11 @@ def bilan_catalogue(request, id_enseigne):
 
     rqt7 = Profil.objects.get(batiment=rqt2)
     profil = rqt7.type_profil
+    personnalise = Profil_types.objects.get(type_profil='Personnalisé')
+    perso = False
+    if profil == personnalise:
+        perso = True
+        profil = ProfilPerso.objects.get(batiment=rqt2)
 
     rqt8 = Electrification.objects.get(souscription=rqt5)
     installation = rqt8.installation
@@ -2057,12 +2069,12 @@ def bilan_catalogue(request, id_enseigne):
 
     Economies_mde = Economies(NbrekWhfacture, Recurrencefacture,
                               Montantfacture, surface, Nbreetages, type, territ)
-    Economies_PV = Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture,
+    Economies_PV = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture,
                                           Recurrencefacture, Montantfacture, Nbreetages, type, etat_batterie, etat_AutoProd, etat_entre_deux)
     Economies_Mobilite = Economies_mobilite(territ, NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking, Nb_pdc_choisi,
                                             Accessibilite_parking, Optionborne, NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages)
 
-    Bilan_avant = Bilan1_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
+    Bilan_avant = Bilan1_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
                                    Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU)
 
     # Bilan_apres = Bilan2(panneau, conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
@@ -2173,7 +2185,7 @@ def bilan_catalogue(request, id_enseigne):
     cons_p = round(cons_p, 2)
 
     # gains revente de surplus moyenne annuelle sur 20 ans
-    revente_surplus_moy = Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, batteries=False, centrale_autoprod=False,
+    revente_surplus_moy = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, batteries=False, centrale_autoprod=False,
                                                  centrale_entrelesdeux=False)[4]
 
     exportsite.revenus_surplus = round(revente_surplus_moy*20, 2)
