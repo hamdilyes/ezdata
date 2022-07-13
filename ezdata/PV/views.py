@@ -1406,7 +1406,7 @@ def factu_catalogue(request, id_enseigne):
     perso = False
     if profil == personnalise:
         perso = True
-        profil = ProfilPerso.objects.get(batiment=rqt2)
+        profil = ProfilPerso.objects.get(batiment=rqt2).profil
 
     rqt5 = Toiture.objects.get(batiment=rqt2)
     surface = rqt5.surface
@@ -2052,7 +2052,7 @@ def bilan_catalogue(request, id_enseigne):
     perso = False
     if profil == personnalise:
         perso = True
-        profil = ProfilPerso.objects.get(batiment=rqt2)
+        profil = ProfilPerso.objects.get(batiment=rqt2).profil
 
     rqt8 = Electrification.objects.get(souscription=rqt5)
     installation = rqt8.installation
