@@ -1,12 +1,25 @@
 {% extends 'base_results.html' %}
 
-{% block title %} Site N° {{ site }} {% endblock %}
+{% block title %}
+<form method="POST">
+  {% csrf_token %}
+  <div class="col-md-2">
+    <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Questionnaire' />
+  </div>
+</form>
+{% endblock %}
 
 {% block navbar %}
 <li class="active ">
   <a href="{% url 'results' id_enseigne %}">
     <i class="nc-icon nc-chart-bar-32"></i>
     <p>Photovoltaïque</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'factu' id_enseigne%}">
+    <i class="nc-icon nc-credit-card"></i>
+    <p> Devis</p>
   </a>
 </li>
 <li>
@@ -19,12 +32,6 @@
   <a href="{% url 'mobi' id_enseigne %}">
     <i class="nc-icon nc-pin-3"></i>
     <p> Mobilité</p>
-  </a>
-</li>
-<li>
-  <a href="{% url 'factu' id_enseigne%}">
-    <i class="nc-icon nc-credit-card"></i>
-    <p> Devis</p>
   </a>
 </li>
 <li>
@@ -42,374 +49,351 @@
 {% endblock navbar %}
 
 {% block content %}
-
 <!-- End Navbar -->
-
 <div class="content">
-  <form action="" method="POST" name="formA">
-    {% csrf_token %}
+
+  {% if alerte_kVA or alerte_surface %}
+  <div class="container">
     <div class="row">
-      <div class="col-lg-3 col-md-6 col-sm-6 ">
-        <label>N° de site </label>
-        <div class="form-group">
-
-          <select class="form-control" name="site">
-
-            {% for i in nb %}
-
-            <option>
-              {{ forloop.counter }}
-            </option>
-
-            {% endfor %}
-          </select>
-
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">
-        <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Site' value='Sélectionner' />
-      </div>
-
-      <div class="col-md-5 offset-2">
-        {% if alerte_kVA %}
-        <p style="color:red"><B>Puissance souscrite insuffisante : {{ puissance }} kVA</B></p>
-        {% endif %}
-        {% if alerte_surface %}
-        <p style="color:red"><B>Surface insuffisante : {{ surface1 }} m²</B></p>
-        {% endif %}
-      </div>
-      <div class="col-md-2">
-        <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Questionnaire' />
-      </div>
-
-      <!-- <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
-        <button class="btn btn-primary bg-gradient-info mt-lg-7 mb-0" onClick="window.print()" type="button"
-          name="button">Rapport PDF</button>
-        <input type='submit' class='btn btn-fill btn-primary btn-wd' name='download' value='Rapport PDF' />
-      </div> -->
-
-    </div>
-  </form>
-</div>
-<div class="container">
-  <div class="row">
-    <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
-      <div class="card card-stats">
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-5 col-md-4">
-              <div class="icon-big text-center icon-warning">
-                <i class="nc-icon nc-sun-fog-29 text-warning"></i>
-              </div>
-            </div>
-            <div class="col-7 col-md-8">
-              <div class="numbers">
-                <p class="card-category">Taille {{ gt }}</p>
-                <p class="card-title"><small>{{ taille }} kWc</small></p>
+      <div class="col-md-6 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-md-12 mr-auto ml-auto">
+                {% if alerte_kVA %}
+                <p style="color:red ; text-align: center"><B>Puissance souscrite insuffisante : {{ puissance }} kVA</B>
+                </p>
+                {% endif %}
+                {% if alerte_surface %}
+                <p style="color:red ; text-align: center"><B>Surface insuffisante : {{ surface1 }} m²</B></p>
+                {% endif %}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
-      <div class="card card-stats">
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-5 col-md-4">
-              <div class="icon-big text-center icon-warning">
-                <i class="nc-icon nc-layout-11 text-success"></i>
-              </div>
-            </div>
-            <div class="col-7 col-md-8">
-              <div class="numbers">
-                <p class="card-category">Modules</p>
-                <p class="card-title">{{ nb_modules }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3 col-md-6 col-sm-6 mr-auto ml-auto">
-      <div class="card card-stats">
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-5 col-md-4">
-              <div class="icon-big text-center icon-warning">
-                <i class="nc-icon nc-settings text-danger"></i>
-              </div>
-            </div>
-            <div class="col-7 col-md-8">
-              <div class="numbers">
-                <p class="card-category">Surface</p>
-                <p class="card-title"><small>{{ surface }} m²</small></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- <div class="col-lg-3 col-md-6 col-sm-6">
-      <div class="card card-stats">
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-5 col-md-4">
-              <div class="icon-big text-center icon-warning">
-                <i class="nc-icon nc-favourite-28 text-primary"></i>
-              </div>
-            </div>
-            <div class="col-7 col-md-8">
-              <div class="numbers">
-                <p class="card-category">N° solution</p>
-                <p class="card-title">{{ n }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
-  <div class="row">
-    <div class="col-md-12 mr-auto ml-auto">
-      <div class="card card-stats">
-        <div class="card-header ">
-          <h5 class="card-title">Rendement de la centrale</h5>
-          <p class="card-category">Jour ouvré </p>
-        </div>
-        <div class="card-body ">
-          <canvas id="line-chart" width="300" height="100"></canvas>
-          <script>
+  {% endif %}
 
-            new Chart(document.getElementById("line-chart"), {
-              type: 'bar',
-              data: {
-                labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-                  '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
-                datasets: [{
-                  data: {{ graph1 }},
-              type: 'line',
-              label: "Consommation du bâtiment",
-              borderColor: "#FF0000",
-              backgroundColor: "#FDFEFE",
-              fill: false,
-            },
-              {
-                data: {{ graph2 }},
-              type: 'line',
-              label: "Production photovoltaïque",
-              borderColor: "#DAF7A6",
-              backgroundColor: "#FDFEFE",
-              fill: false,
+  <!-- <button class="btn btn-primary bg-gradient-info mt-lg-7 mb-0" onClick="window.print()" type="button"
+          name="button">Rapport PDF</button> -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-5 col-md-4">
+                <div class="icon-big text-center icon-warning">
+                  <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+                </div>
+              </div>
+              <div class="col-7 col-md-8">
+                <div class="numbers">
+                  <p class="card-category"><small>Taille idéale : {{ gt }}</small></p>
+                  <p class="card-title"><small>{{ taille }} kWc</small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-5 col-md-4">
+                <div class="icon-big text-center icon-warning">
+                  <i class="nc-icon nc-layout-11 text-success"></i>
+                </div>
+              </div>
+              <div class="col-7 col-md-8">
+                <div class="numbers">
+                  <p class="card-category">Modules</p>
+                  <p class="card-title">{{ nb_modules }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-5 col-md-4">
+                <div class="icon-big text-center icon-warning">
+                  <i class="nc-icon nc-settings text-danger"></i>
+                </div>
+              </div>
+              <div class="col-7 col-md-8">
+                <div class="numbers">
+                  <p class="card-category">Surface</p>
+                  <p class="card-title"><small><small>{{ surface }} m²</small></small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-2 mr-auto ml-auto">
+          <input type='submit' class='btn btn-danger btn-wd' name='Plus' value='+' />
+        </div>
+        <div class="col-md-2 mr-auto ml-auto">
+          <input type='submit' class='btn btn-primary btn-wd' name='Reset' value='MODE AUTO' />
+        </div>
+        <div class="col-md-2 mr-auto ml-auto">
+          <input type='submit' class='btn btn-warning btn-wd' name='Moins' value='-' />
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+      <div class="col-md-12 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-header ">
+            <h5 class="card-title">Rendement de la centrale</h5>
+            <p class="card-category">Jour ouvré </p>
+          </div>
+          <div class="card-body ">
+            <canvas id="line-chart" width="300" height="100"></canvas>
+            <script>
+
+              new Chart(document.getElementById("line-chart"), {
+                type: 'bar',
+                data: {
+                  labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                    '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                  datasets: [{
+                    data: {{ graph1 }},
+                type: 'line',
+                label: "Consommation du bâtiment",
+                borderColor: "#FF0000",
+                backgroundColor: "#FDFEFE",
+                fill: false,
               },
-              {
-                label: 'Energie photovoltaïque autoconsommée',
-                data: {{ graph3 }},
-              borderColor: '#FFC108',
-              fill: 1,
-              stack: 'Stack 0',
-              backgroundColor: 'rgba(255,193,8,0.5)',
+                {
+                  data: {{ graph2 }},
+                type: 'line',
+                label: "Production photovoltaïque",
+                borderColor: "#DAF7A6",
+                backgroundColor: "#FDFEFE",
+                fill: false,
               },
-              {
-                label: "Energie achetée au fournisseur",
-                data: {{ EDF }},
-              borderColor: '#2986cc',
-              fill: 1,
-              stack: 'Stack 0',
-              backgroundColor: 'rgba(41,134,204,0.5)',
+                {
+                  label: 'Energie photovoltaïque autoconsommée',
+                  data: {{ graph3 }},
+                borderColor: '#FFC108',
+                fill: 1,
+                stack: 'Stack 0',
+                backgroundColor: 'rgba(255,193,8,0.5)',
+              },
+                {
+                  label: "Energie achetée au fournisseur",
+                  data: {{ EDF }},
+                borderColor: '#2986cc',
+                fill: 1,
+                stack: 'Stack 0',
+                backgroundColor: 'rgba(41,134,204,0.5)',
               }]
             },
-              options: {
-              plugins: {
-                filler: {
-                  propagate: true,
+                options: {
+                plugins: {
+                  filler: {
+                    propagate: true,
+                  }
+                },
+                responsive: true,
+                scales: {
+                  x: [{
+                    stacked: true,
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Heures'
+                    }
+                  }],
+                  y: [{
+                    stacked: true,
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'kW'
+                    }
+                  }]
+                },
+
+                title: {
+                  display: false,
+                  text: 'Profil énergétique'
                 }
-              },
-              responsive: true,
-              scales: {
-                x: [{
-                  stacked: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: 'Heures'
-                  }
-                }],
-                y: [{
-                  stacked: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: 'kW'
-                  }
-                }]
-              },
-
-              title: {
-                display: false,
-                text: 'Profil énergétique'
               }
-            }
           });
-          </script>
+            </script>
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12 mr-auto ml-auto">
-      <div class="card ">
-        <div class="card-header ">
-          <h5 class="card-title">Rendement de la centrale</h5>
-          <p class="card-category">Week-end</p>
-        </div>
-        <div class="card-body ">
-          <canvas id="weekend-chart" width="300" height="100"></canvas>
-          <script>
+    <div class="row">
+      <div class="col-md-12 mr-auto ml-auto">
+        <div class="card ">
+          <div class="card-header ">
+            <h5 class="card-title">Rendement de la centrale</h5>
+            <p class="card-category">Week-end</p>
+          </div>
+          <div class="card-body ">
+            <canvas id="weekend-chart" width="300" height="100"></canvas>
+            <script>
 
-            new Chart(document.getElementById("weekend-chart"), {
-              type: 'bar',
-              data: {
-                labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-                  '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
-                datasets: [{
-                  data: {{ graph4 }},
-              type: 'line',
-              label: "Consommation du bâtiment",
-              borderColor: "#FF0000",
-              backgroundColor: "#FDFEFE",
-              fill: false,
-            }, {
-              data: {{ graph2 }},
-              type: 'line',
-              label: "Production photovoltaïque",
-              borderColor: "#DAF7A6",
-              backgroundColor: "#FDFEFE",
-              fill: false,
+              new Chart(document.getElementById("weekend-chart"), {
+                type: 'bar',
+                data: {
+                  labels: ['00:00', '01:00', '02:00', '03:20', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                    '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                  datasets: [{
+                    data: {{ graph4 }},
+                type: 'line',
+                label: "Consommation du bâtiment",
+                borderColor: "#FF0000",
+                backgroundColor: "#FDFEFE",
+                fill: false,
+              }, {
+                data: {{ graph2 }},
+                type: 'line',
+                label: "Production photovoltaïque",
+                borderColor: "#DAF7A6",
+                backgroundColor: "#FDFEFE",
+                fill: false,
                              },
-              {
-                label: 'Energie photovoltaïque autoconsommée',
-                data: {{ graph5 }},
-              borderColor: '#FFC108',
-              fill: 1,
-              stack: 'Stack 0',
-              backgroundColor: 'rgba(255,193,8,0.5)',
+                {
+                  label: 'Energie photovoltaïque autoconsommée',
+                  data: {{ graph5 }},
+                borderColor: '#FFC108',
+                fill: 1,
+                stack: 'Stack 0',
+                backgroundColor: 'rgba(255,193,8,0.5)',
                             },
-              {
-                label: "Energie achetée au fournisseur",
-                data: {{ EDF_1 }},
-              borderColor: '#2986cc',
-              fill: 1,
-              stack: 'Stack 0',
-              backgroundColor: 'rgba(41,134,204,0.5)',
+                {
+                  label: "Energie achetée au fournisseur",
+                  data: {{ EDF_1 }},
+                borderColor: '#2986cc',
+                fill: 1,
+                stack: 'Stack 0',
+                backgroundColor: 'rgba(41,134,204,0.5)',
                             }
                             ]
                           },
-              options: {
-              plugins: {
-                filler: {
-                  propagate: true,
-                }
-              },
-              responsive: true,
-              scales: {
-                x: [{
-                  stacked: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: 'Heures'
+                options: {
+                plugins: {
+                  filler: {
+                    propagate: true,
                   }
-                }],
-                y: [{
-                  stacked: true,
-                  scaleLabel: {
-                    display: true,
-                    labelString: 'kW'
-                  }
-                }]
-              },
+                },
+                responsive: true,
+                scales: {
+                  x: [{
+                    stacked: true,
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Heures'
+                    }
+                  }],
+                  y: [{
+                    stacked: true,
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'kW'
+                    }
+                  }]
+                },
 
-              title: {
-                display: false,
-                text: 'Profil énergétique'
+                title: {
+                  display: false,
+                  text: 'Profil énergétique'
+                }
               }
-            }
                         });
 
-          </script>
+            </script>
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-lg-4 col-md-6 col-sm-6 mr-auto ml-auto">
-      <div class="card card-stats">
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-5 col-md-4">
-              <div class="icon-big text-center icon-warning">
-                <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+    <div class="row">
+      <div class="col-lg-4 col-md-6 col-sm-6 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-5 col-md-4">
+                <div class="icon-big text-center icon-warning">
+                  <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+                </div>
+              </div>
+              <div class="col-7 col-md-8">
+                <div class="numbers">
+                  <p class="card-category"><small>Autoconsommation</small></p>
+                  <p class="card-title">{{ autoconso }} %</p>
+                </div>
               </div>
             </div>
-            <div class="col-7 col-md-8">
-              <div class="numbers">
-                <p class="card-category"><small>Autoconsommation</small></p>
-                <p class="card-title">{{ autoconso }} %</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-6 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-5 col-md-4">
+                <div class="icon-big text-center icon-warning">
+                  <i class="nc-icon nc-layout-11 text-success"></i>
+                </div>
+              </div>
+              <div class="col-7 col-md-8">
+                <div class="numbers">
+                  <p class="card-category"><small>Autoproduction</small></p>
+                  <p class="card-title">{{ autoprod }} %</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-4 col-md-6 col-sm-6 mr-auto ml-auto">
-      <div class="card card-stats">
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-5 col-md-4">
-              <div class="icon-big text-center icon-warning">
-                <i class="nc-icon nc-layout-11 text-success"></i>
-              </div>
-            </div>
-            <div class="col-7 col-md-8">
-              <div class="numbers">
-                <p class="card-category"><small>Autoproduction</small></p>
-                <p class="card-title">{{ autoprod }} %</p>
-              </div>
-            </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-stats">
+
+          <div class="card-header ">
+            <h5 class="card-body">Autoconsommation</h5>
+            <p class="card-body"><B>Consommer l'électricité produite. </B></p>
+            <p class="card-body"> Vous consommez directement <B> {{ autoconso }} % </B> de l'électricité que produit
+              la
+              centrale photovoltaïque sur une année.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card card-stats">
+          <div class="card-header">
+            <h5 class="card-body">Autoproduction</h5>
+            <p class="card-body"><B>Produire l'électricité consommée. </B> </p>
+            <p class="card-body">La centrale photovoltaïque produit <B>{{ autoprod }} %</B> de votre consommation
+              annuelle d'électricité.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card card-stats">
-
-        <div class="card-header ">
-          <h5 class="card-body">Autoconsommation</h5>
-          <p class="card-body"><B>Consommer l'électricité produite. </B></p>
-          <p class="card-body"> Vous consommez directement <B> {{ autoconso }} % </B> de l'électricité que produit
-            la
-            centrale photovoltaïque sur une année.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card card-stats">
-        <div class="card-header">
-          <h5 class="card-body">Autoproduction</h5>
-          <p class="card-body"><B>Produire l'électricité consommée. </B> </p>
-          <p class="card-body">La centrale photovoltaïque produit <B>{{ autoprod }} %</B> de votre consommation
-            annuelle d'électricité.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 </div>
 {% endblock %}

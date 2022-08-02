@@ -24,7 +24,7 @@ urlpatterns = [
     path('<int:id_enseigne>/mobi', views.mobi, name='mobi'),
     path('<int:id_enseigne>/bilan', views.bilan_catalogue, name='bilan'),
     path('<int:id_enseigne>/multi-sites',
-         views.multi_sites_catalogue, name='multi-sites'),
+         views.multi_sites_catalogue, name='multi_sites'),
 
     path('<int:id_enseigne>/pdf/<str:templatepath>/<int:nsite>',
          views.render_pdf_view, name='pdftest'),

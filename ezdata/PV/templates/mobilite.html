@@ -1,11 +1,24 @@
 {% extends 'base_results.html' %}
-{% block title %} Site N° {{ site }} {% endblock %}
+{% block title %}
+<form action="" method="POST" name="formA">
+  {% csrf_token %}
+  <div class="col-md-2">
+    <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Questionnaire' />
+  </div>
+</form>
+{% endblock %}
 
 {% block navbar %}
 <li>
   <a href="{% url 'results' id_enseigne %}">
     <i class="nc-icon nc-chart-bar-32"></i>
     <p>Photovoltaïque</p>
+  </a>
+</li>
+<li>
+  <a href="{% url 'factu' id_enseigne%}">
+    <i class="nc-icon nc-credit-card"></i>
+    <p> Devis</p>
   </a>
 </li>
 <li>
@@ -18,12 +31,6 @@
   <a href="{% url 'mobi' id_enseigne %}">
     <i class="nc-icon nc-pin-3"></i>
     <p> Mobilité</p>
-  </a>
-</li>
-<li>
-  <a href="{% url 'factu' id_enseigne%}">
-    <i class="nc-icon nc-credit-card"></i>
-    <p> Devis</p>
   </a>
 </li>
 <li>
@@ -44,131 +51,103 @@
 
 <!-- End Navbar -->
 <div class="content">
-  <form action="" method="POST" name="formA">
-    {% csrf_token %}
-    <div class="row">
-      <div class="col-lg-3 col-md-6 col-sm-6 ">
-        <label>N° de site </label>
-        <div class="form-group">
-
-          <select class="form-control" name="site">
-
-            {% for i in nb %}
-
-            <option>
-              {{ forloop.counter }}
-            </option>
-
-            {% endfor %}
-          </select>
-
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title"> Economies envisagées</h4>
         </div>
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <input type='submit' class='btn btn-fill btn-warning btn-wd' name='Site' value='Site' />
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Revenir au questionnaire' />
-      </div>
-  </form>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header">
-        <h4 class="card-title"> Economies envisagées</h4>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead class=" text-primary">
-              <th>
-                Type d'économies
-              </th>
-              <th>
-                Sur 1 an
-              </th>
-              <th>
-                Sur 10 ans
-              </th>
-              <th>
-                Sur 20 ans
-              </th>
-            </thead>
-            <tbody>
-              <tr>
-                <td class=" text-primary">
-                  Economique
-                </td>
-                {% for f in bilan1 %}
-                <td>
-                  {{f|intcomma}} €
-                </td>
-                {% endfor %}
-              </tr>
-              <tr>
-                <td class=" text-primary">
-                  Environnemental
-                </td>
-                {% for f in bilan3 %}
-                <td>
-                  {{f|intcomma}} CO<sub>2</sub>
-                </td>
-                {% endfor %}
-              </tr>
-            </tbody>
-          </table>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class=" text-primary">
+                <th>
+                  Type d'économies
+                </th>
+                <th>
+                  Sur 1 an
+                </th>
+                <th>
+                  Sur 10 ans
+                </th>
+                <th>
+                  Sur 20 ans
+                </th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class=" text-primary">
+                    Economique
+                  </td>
+                  {% for f in bilan1 %}
+                  <td>
+                    {{f|intcomma}} €
+                  </td>
+                  {% endfor %}
+                </tr>
+                <tr>
+                  <td class=" text-primary">
+                    Environnemental
+                  </td>
+                  {% for f in bilan3 %}
+                  <td>
+                    {{f|intcomma}} CO<sub>2</sub>
+                  </td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="card ">
-      <div class="card-header ">
-        <h5 class="card-title">Coût de la flotte automobile</h5>
-      </div>
-      <div class="card-body ">
-        <canvas id="line-chart" width="300" height="100"></canvas>
-        <script>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card ">
+        <div class="card-header ">
+          <h5 class="card-title">Coût de la flotte automobile</h5>
+        </div>
+        <div class="card-body ">
+          <canvas id="line-chart" width="300" height="100"></canvas>
+          <script>
 
-          new Chart(document.getElementById("line-chart"), {
-            type: 'line',
-            data: {
-              labels: ['Année 1', 'Année 2', 'Année 3', 'Année 4', 'Année 5', 'Année 6', 'Année 7', 'Année 8', 'Année 9', 'Année 10',
-                'Année 11', 'Année 12', 'Année 13', 'Année 14', 'Année 15', 'Année 16', 'Année 17', 'Année 18', 'Année 19', 'Année 20'],
-              datasets: [{
-                data: {{ courbe1 }},
-            label: "Sans action",
-            backgroundColor: "#FF0000",
-            borderColor: "#FDFEFE",
-            fill: false,
-          }, {
-            data: {{ courbe2 }},
-            label: "Avec transition",
-            backgroundColor: "#6aa84f",
-            borderColor: "#FDFEFE",
-            fill: false,
+            new Chart(document.getElementById("line-chart"), {
+              type: 'line',
+              data: {
+                labels: ['Année 1', 'Année 2', 'Année 3', 'Année 4', 'Année 5', 'Année 6', 'Année 7', 'Année 8', 'Année 9', 'Année 10',
+                  'Année 11', 'Année 12', 'Année 13', 'Année 14', 'Année 15', 'Année 16', 'Année 17', 'Année 18', 'Année 19', 'Année 20'],
+                datasets: [{
+                  data: {{ courbe1 }},
+              label: "Sans action",
+              backgroundColor: "#FF0000",
+              borderColor: "#FDFEFE",
+              fill: false,
+            }, {
+              data: {{ courbe2 }},
+              label: "Avec transition",
+              backgroundColor: "#6aa84f",
+              borderColor: "#FDFEFE",
+              fill: false,
                              },
                             ]
                           },
-            options: {
-            plugins: {
-              filler: {
-                propagate: true,
+              options: {
+              plugins: {
+                filler: {
+                  propagate: true,
+                }
+              },
+              title: {
+                display: false,
+                text: "Coût de la flotte automobile"
               }
-            },
-            title: {
-              display: false,
-              text: "Coût de la flotte automobile"
             }
-          }
                         });
-        </script>
+          </script>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>
 {% endblock %}

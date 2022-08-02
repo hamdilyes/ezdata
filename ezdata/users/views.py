@@ -17,27 +17,6 @@ from PV.forms import *
 import xlwt
 import csv
 
-# Students name
-NAME = ['Riya', 'Suzzane', 'George', 'Zoya', 'Smith', 'Henry']
-# QUIZ Subject
-SUBJECT = ['CHE', 'PHY', 'CHE', 'BIO', 'ENG', 'ENG']
-
-
-def psg(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse('text/csv')
-    response['Content-Disposition'] = 'attachment; filename=quiz.csv'
-# Create the CSV writer using the HttpResponse as the "file"
-    writer = csv.writer(response)
-    writer.writerow(['Student Name', 'Quiz Subject'])
-    for (name, sub) in zip(NAME, SUBJECT):
-        writer.writerow([name, sub])
-
-    return response
-
-
-# Create your views here.
-
 
 def home(request):
     return render(request, 'users/templates/home.html')
@@ -160,21 +139,3 @@ def addproject(request):
         formP = ProjetForm()
 
     return render(request, 'wizard-create-project.html', {'formP': formP, 'nom_entreprise': nom_entreprise})
-
-
-# def export_csv(request):
-#     # Students name
-#     NAME = ['Riya', 'Suzzane', 'George', 'Zoya', 'Smith', 'Henry']
-#     # QUIZ Subject
-#     SUBJECT = ['CHE', 'PHY', 'CHE', 'BIO', 'ENG', 'ENG']
-
-#     # Create the HttpResponse object with the appropriate CSV header.
-#     response = HttpResponse()
-#     response['Content-Disposition'] = 'attachment; filename=quiz.csv'
-#     # Create the CSV writer using the HttpResponse as the "file"
-#     writer = csv.writer(response)
-#     writer.writerow(['Student Name', 'Quiz Subject'])
-#     for (name, sub) in zip(NAME, SUBJECT):
-#         writer.writerow([name, sub])
-
-#     return response

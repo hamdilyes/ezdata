@@ -217,6 +217,77 @@ def concat_solutions(solutions_list, installation):
     return sol
 
 
+def change(sol, plus):
+    # plus = True pour passer à la prochaine centrale en termes de taille
+    # plus = False pour passer à celle juste avant
+
+    installation = "Triphasée"
+    catalogue = CatalogueSolution.objects.filter(installation=installation)
+    # les tailles standard < 100 kWc
+    tailles = [x.taille for x in catalogue if x.taille < 100]
+    n = len(tailles)-1
+    tailles.sort()
+    t_max = tailles[n]
+
+    # solution actuelle
+    t = sol.taille
+
+    # recréer la liste solutions_list à partir de la taille de la centrale déjà sélectionnée
+    # et modifier pour avoir la centrale juste après
+    tailles_sols = []
+    ta = t
+    ta = round(ta, 1)
+
+    while ta >= t_max:
+        ta -= t_max
+        tailles_sols.append(t_max)
+    print(1)
+    ta = round(ta, 1)
+    # maintenant ta < t_max
+    if ta >= tailles[0]:
+        print(2)
+        print(ta)
+        print(tailles[0])
+        i = 0
+        while i < n-1 and ta > tailles[i]:
+            i += 1
+        # on sait que i<n
+        if plus:
+            i += 1
+            tailles_sols.append(tailles[i])
+            print(3)
+        else:
+            print(4)
+            if i > 0:
+                print(5)
+                tailles_sols.append(tailles[i-1])
+            else:
+                print(6)
+                if tailles_sols == []:
+                    tailles_sols.append(tailles[0])
+    else:
+        print(7)
+        if plus:
+            print(8)
+            tailles_sols.append(tailles[0])
+        else:
+            print(8)
+            if tailles_sols != []:
+                print(9)
+                tailles_sols.pop(-1)
+                tailles_sols.append(tailles[n-1])
+            else:
+                print(10)
+                tailles_sols.append(tailles[0])
+
+    sols = [CatalogueSolution.objects.get(
+        taille=t, installation=installation) for t in tailles_sols]
+
+    sol = concat_solutions(sols, installation="Triphasée")
+
+    return sol
+
+
 def calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                                      centrale_entrelesdeux):
 
