@@ -968,7 +968,7 @@ def results_catalogue(request, id_enseigne):
 
     out = np.array(coeffs_ouvre).flatten().tolist()
     tab = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface1,
-                                           installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)[0]
+                                           installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux, id_enseigne)[0]
 
     result1 = tab[:, 1] / 1000
     out1 = np.array(result1).flatten().tolist()
@@ -1007,10 +1007,10 @@ def results_catalogue(request, id_enseigne):
 
     surface_totale = round(surface_totale, 2)
     auto_conso = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface1,
-                                                  installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)[1]
+                                                  installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux, id_enseigne)[1]
     auto_conso = round(auto_conso, 2)
     auto_prod = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface1,
-                                                 installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)[2]
+                                                 installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux, id_enseigne)[2]
     auto_prod = round(auto_prod, 2)
 
     alerte_kVA = taille > puissance
@@ -1026,12 +1026,6 @@ def results_catalogue(request, id_enseigne):
         url = reverse('mobilite', kwargs={'id_enseigne': id_enseigne})
 
         return HttpResponseRedirect(url)
-
-    # if 'download' in request.POST:
-    #     url = reverse('pdftest', kwargs={
-    #                   'id_enseigne': id_enseigne, 'templatepath': 'dashboard_2_pdf.html', 'nsite': site})
-
-    #     return HttpResponseRedirect(url)
 
     return render(request, 'dashboard_2.html',
                   {'alerte_surface': alerte_surface, 'puissance': puissance, 'alerte_kVA': alerte_kVA, 'gt': gt, 'id_enseigne': id_enseigne, 'site': site, 'nb': range_nb, 'taille': taille, 'nb_modules': nbr_modules, 'surface': surface_totale,
@@ -1059,11 +1053,6 @@ def factu_catalogue(request, id_enseigne):
         exportsite = ExportSite.objects.get(enseigne=rqt1)
 
     range_nb = range(nb)
-
-    # Mise à jour de la valeur du site
-
-    if request.method == 'POST':
-        site = request.POST.get('site')
 
     rqt2 = Batiment.objects.filter(enseigne=rqt1, num_sites=site)[0]
 
@@ -1102,6 +1091,11 @@ def factu_catalogue(request, id_enseigne):
 
     sol = solution_catalogue(conso_perso, profil, perso, territ, surface,
                              installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux)
+    if CentraleBatiment.objects.filter(batiment=rqt2).exists():
+        cb = CentraleBatiment.objects.get(batiment=rqt2)
+        if SolutionBatiment.objects.filter(centrale_batiment=cb).exists():
+            x = SolutionBatiment.objects.get(centrale_batiment=cb)
+            sol = x.solution
 
     choices = FacturationItem.objects.filter(type="Module photovoltaïque")
     choices = [x for x in choices]
@@ -1141,12 +1135,6 @@ def factu_catalogue(request, id_enseigne):
 
     if 'Précédent' in request.POST:
         url = reverse('mobilite', kwargs={'id_enseigne': id_enseigne})
-
-        return HttpResponseRedirect(url)
-
-    if 'download' in request.POST:
-        url = reverse('pdftest', kwargs={
-                      'id_enseigne': id_enseigne, 'templatepath': 'factu_pdf.html', 'nsite': site})
 
         return HttpResponseRedirect(url)
 
@@ -1383,12 +1371,12 @@ def bilan_catalogue(request, id_enseigne):
     Economies_mde = Economies(NbrekWhfacture, Recurrencefacture,
                               Montantfacture, surface, Nbreetages, type, territ)
     Economies_PV = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture,
-                                          Recurrencefacture, Montantfacture, Nbreetages, type, etat_batterie, etat_AutoProd, etat_entre_deux)
+                                          Recurrencefacture, Montantfacture, Nbreetages, type, etat_batterie, etat_AutoProd, etat_entre_deux, id_enseigne)
     Economies_Mobilite = Economies_mobilite(territ, NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking, Nb_pdc_choisi,
                                             Accessibilite_parking, Optionborne, NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages)
 
     Bilan_avant = Bilan1_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
-                                   Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU)
+                                   Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU, id_enseigne)
 
     # Bilan_apres = Bilan2(panneau, conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
     #                      Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking,
@@ -1498,8 +1486,8 @@ def bilan_catalogue(request, id_enseigne):
     cons_p = round(cons_p, 2)
 
     # gains revente de surplus moyenne annuelle sur 20 ans
-    revente_surplus_moy = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, batteries=False, centrale_autoprod=False,
-                                                 centrale_entrelesdeux=False)[4]
+    revente_surplus_moy = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, False, False,
+                                                 False, id_enseigne)[4]
 
     exportsite.revenus_surplus = round(revente_surplus_moy*20, 2)
 
@@ -1532,9 +1520,9 @@ def bilan_catalogue(request, id_enseigne):
 @login_required
 def multi_sites_catalogue(request, id_projet):
     global conso_perso
-    rqt = Projet.objects.get(id=id_projet)
+    projet = Projet.objects.get(id=id_projet)
 
-    rqt1 = Enseigne.objects.get()
+    site = 1
 
     # Mise à jour de la valeur du site
 
@@ -1564,8 +1552,10 @@ def multi_sites_catalogue(request, id_projet):
     cons_avant_mob = 0
     cons_avant_elec = 0
 
-    for site in range(1, nb+1):
+    for rqt1 in Enseigne.objects.filter(projet=projet):
         rqt2 = Batiment.objects.filter(enseigne=rqt1).filter(num_sites=site)[0]
+
+        id_enseigne = rqt1.id
 
         Nbreetages = rqt2.nb_etages
         type = rqt2.type_batiment
@@ -1598,6 +1588,11 @@ def multi_sites_catalogue(request, id_projet):
 
         rqt7 = Profil.objects.get(batiment=rqt2)
         profil = rqt7.type_profil
+        personnalise = Profil_types.objects.get(type_profil='Personnalisé')
+        perso = False
+        if profil == personnalise:
+            perso = True
+            profil = ProfilPerso.objects.get(batiment=rqt2).profil
 
         rqt8 = Electrification.objects.get(souscription=rqt5)
         installation = rqt8.installation
@@ -1614,13 +1609,13 @@ def multi_sites_catalogue(request, id_projet):
 
         Economies_mde = Economies(NbrekWhfacture, Recurrencefacture,
                                   Montantfacture, surface, Nbreetages, type, territ)
-        Economies_PV = Economies_pv_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture,
-                                              Recurrencefacture, Montantfacture, Nbreetages, type, etat_batterie, etat_AutoProd, etat_entre_deux)
+        Economies_PV = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture,
+                                              Recurrencefacture, Montantfacture, Nbreetages, type, etat_batterie, etat_AutoProd, etat_entre_deux, id_enseigne)
         Economies_Mobilite = Economies_mobilite(territ, NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking, Nb_pdc_choisi,
                                                 Accessibilite_parking, Optionborne, NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages)
 
-        Bilan_avant = Bilan1_catalogue(conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
-                                       Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU)
+        Bilan_avant = Bilan1_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
+                                       Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU, id_enseigne)
 
         # Bilan_apres = Bilan2(panneau, conso_perso, profil, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
         #                      Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU, Presenceparking,
@@ -1726,12 +1721,7 @@ def multi_sites_catalogue(request, id_projet):
         cons_p = (cons_avant-cons_apres)/cons_avant*100
         cons_p = round(cons_p, 2)
 
-    if 'Précédent' in request.POST:
-        url = reverse('mobilite', kwargs={'id_enseigne': id_enseigne})
-
-        return HttpResponseRedirect(url)
-
-    return render(request, 'multi_sites.html', {'id_enseigne': id_enseigne, 'site': site, 'nb': range_nb, 'un': Economique_mde, 'deux': Economique_pv, 'trois': Economique_mobilite, 'quatre': Total_Economique,
+    return render(request, 'multi_sites.html', {'site': site, 'un': Economique_mde, 'deux': Economique_pv, 'trois': Economique_mobilite, 'quatre': Total_Economique,
                                                 'cinq': Environnement_mde, 'six': Environnement_pv, 'sept': Environnement_mobilite, 'huit': Total_Environnement,
                                                 'neuf': Energie_mde, 'dix': Energie_mobilite, 'onze': Total_Energie,
                                                 'Reduction_MDE': coeff_un, 'Reduction_PV': coeff_deux, 'Reduction_Mobilite': coeff_trois, 'Emission_20ans': emission_sans_action,

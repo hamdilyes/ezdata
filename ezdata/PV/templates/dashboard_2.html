@@ -3,8 +3,14 @@
 {% block title %}
 <form method="POST">
   {% csrf_token %}
-  <div class="col-md-2">
-    <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Questionnaire' />
+  <div class="row">
+    <div class="col-md-3">
+      <input type='submit' class='btn btn-sucess btn-wd' name='Précédent' value='Questionnaire' />
+    </div>
+    <div class="col-md-3 offset-6">
+      <button class="btn btn-primary bg-gradient-info mt-lg-7 mb-0" onClick="window.print()" type="button"
+        name="button">PDF</button>
+    </div>
   </div>
 </form>
 {% endblock %}
@@ -41,7 +47,7 @@
   </a>
 </li>
 <li>
-  <a href="{% url 'pdftest' id_enseigne 'rapport_pdf.html' 0 %}">
+  <a href="">
     <i class="nc-icon nc-send"></i>
     <p> Rapport complet</p>
   </a>
@@ -49,9 +55,10 @@
 {% endblock navbar %}
 
 {% block content %}
+{% load static %}
+{% load humanize %}
 <!-- End Navbar -->
 <div class="content">
-
   {% if alerte_kVA or alerte_surface %}
   <div class="container">
     <div class="row">
@@ -76,12 +83,9 @@
   </div>
   {% endif %}
 
-  <!-- <button class="btn btn-primary bg-gradient-info mt-lg-7 mb-0" onClick="window.print()" type="button"
-          name="button">Rapport PDF</button> -->
-
   <div class="container">
     <div class="row">
-      <div class="col-md-3 mr-auto ml-auto">
+      <div class="col-md-4 mr-auto ml-auto">
         <div class="card card-stats">
           <div class="card-body ">
             <div class="row">
@@ -100,7 +104,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3 mr-auto ml-auto">
+      <div class="col-md-4 mr-auto ml-auto">
         <div class="card card-stats">
           <div class="card-body ">
             <div class="row">
@@ -119,7 +123,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3 mr-auto ml-auto">
+      <div class="col-md-4 mr-auto ml-auto">
         <div class="card card-stats">
           <div class="card-body ">
             <div class="row">
@@ -154,6 +158,47 @@
         </div>
       </div>
     </form>
+
+    <div class="row">
+      <div class="col-md-4 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-5 col-md-4">
+                <div class="icon-big text-center icon-warning">
+                  <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+                </div>
+              </div>
+              <div class="col-7 col-md-8">
+                <div class="numbers">
+                  <p class="card-category"><small>Autoconsommation</small></p>
+                  <p class="card-title">{{ autoconso }} %</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mr-auto ml-auto">
+        <div class="card card-stats">
+          <div class="card-body ">
+            <div class="row">
+              <div class="col-5 col-md-4">
+                <div class="icon-big text-center icon-warning">
+                  <i class="nc-icon nc-layout-11 text-success"></i>
+                </div>
+              </div>
+              <div class="col-7 col-md-8">
+                <div class="numbers">
+                  <p class="card-category"><small>Autoproduction</small></p>
+                  <p class="card-title">{{ autoprod }} %</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-md-12 mr-auto ml-auto">
@@ -323,47 +368,6 @@
 
             </script>
 
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-6 mr-auto ml-auto">
-        <div class="card card-stats">
-          <div class="card-body ">
-            <div class="row">
-              <div class="col-5 col-md-4">
-                <div class="icon-big text-center icon-warning">
-                  <i class="nc-icon nc-sun-fog-29 text-warning"></i>
-                </div>
-              </div>
-              <div class="col-7 col-md-8">
-                <div class="numbers">
-                  <p class="card-category"><small>Autoconsommation</small></p>
-                  <p class="card-title">{{ autoconso }} %</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-6 mr-auto ml-auto">
-        <div class="card card-stats">
-          <div class="card-body ">
-            <div class="row">
-              <div class="col-5 col-md-4">
-                <div class="icon-big text-center icon-warning">
-                  <i class="nc-icon nc-layout-11 text-success"></i>
-                </div>
-              </div>
-              <div class="col-7 col-md-8">
-                <div class="numbers">
-                  <p class="card-category"><small>Autoproduction</small></p>
-                  <p class="card-title">{{ autoprod }} %</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

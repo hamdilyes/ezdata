@@ -3,8 +3,14 @@
 {% block title %}
 <form action="" method="POST" name="formA">
   {% csrf_token %}
-  <div class="col-lg-3 col-md-6 col-sm-6">
-    <input type='submit' class='btn btn-fill btn-sucess btn-wd' name='Précédent' value='Questionnaire' />
+  <div class="row">
+    <div class="col-md-3">
+      <input type='submit' class='btn btn-sucess btn-wd' name='Précédent' value='Questionnaire' />
+    </div>
+    <div class="col-md-3 offset-6">
+      <button class="btn btn-primary bg-gradient-info mt-lg-7 mb-0" onClick="window.print()" type="button"
+        name="button">PDF</button>
+    </div>
   </div>
 </form>
 {% endblock %}

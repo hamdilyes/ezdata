@@ -23,7 +23,8 @@ urlpatterns = [
     path('<int:id_enseigne>/mde', views.mde, name='mde'),
     path('<int:id_enseigne>/mobi', views.mobi, name='mobi'),
     path('<int:id_enseigne>/bilan', views.bilan_catalogue, name='bilan'),
-    path('<int:id_enseigne>/multi-sites',
+
+    path('<int:id_projet>/multi-sites',
          views.multi_sites_catalogue, name='multi_sites'),
 
     path('<int:id_enseigne>/pdf/<str:templatepath>/<int:nsite>',

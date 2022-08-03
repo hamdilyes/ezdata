@@ -289,7 +289,7 @@ def change(sol, plus):
 
 
 def calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
-                                     centrale_entrelesdeux):
+                                     centrale_entrelesdeux, id_enseigne):
 
     catalogue = CatalogueSolution.objects.filter(installation=installation)
 
@@ -301,8 +301,18 @@ def calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface
     panneau_name = modulepv.article
     panneau = ModulesPV.objects.get(Nom=panneau_name)
 
-    centrale_GT = solution_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
-                                     centrale_entrelesdeux).taille
+    sol = solution_catalogue(conso_perso, profil, perso, territ, surface,
+                             installation, puissance, batteries, centrale_autoprod, centrale_entrelesdeux)
+
+    rqt1 = Enseigne.objects.get(id=id_enseigne)
+    rqt2 = Batiment.objects.filter(enseigne=rqt1).filter(num_sites=1)[0]
+    if CentraleBatiment.objects.filter(batiment=rqt2).exists():
+        cb = CentraleBatiment.objects.get(batiment=rqt2)
+        if SolutionBatiment.objects.filter(centrale_batiment=cb).exists():
+            x = SolutionBatiment.objects.get(centrale_batiment=cb)
+            sol = x.solution
+
+    centrale_GT = sol.taille
 
     # ATTENTION
     # Batterie en kWh dans les params
@@ -483,7 +493,7 @@ def calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface
 
 
 def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, batteries, centrale_autoprod,
-                           centrale_entrelesdeux):
+                           centrale_entrelesdeux, id_enseigne):
 
     catalogue = CatalogueSolution.objects.filter(installation=installation)
 
@@ -508,7 +518,7 @@ def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installa
         NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages)[2]
 
     energie_autoconsome = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries,
-                                                           centrale_autoprod, centrale_entrelesdeux)[3]
+                                                           centrale_autoprod, centrale_entrelesdeux, id_enseigne)[3]
 
     ancienne_conso = [NbrekWhannuel] * 20
 
@@ -537,7 +547,7 @@ def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installa
     else:
         prix_vente = 0
     surplus_annuel = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
-                                                      centrale_entrelesdeux)[4]
+                                                      centrale_entrelesdeux, id_enseigne)[4]
     revente_surplus = round(surplus_annuel*prix_vente, 2)
 
     print(surplus_annuel)
@@ -582,7 +592,7 @@ def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installa
 
 
 def Bilan1_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
-                     Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU):
+                     Montantfacture, Nbreetages, type, NbreVS, NbkmanVS, NbreVU, NbkmanVU, id_enseigne):
 
     rqt0 = Emisission_CO2.objects.get(territ=territ)
     rqt1 = Emisission_CO2.objects.get(territ="Litre d'essence")
@@ -627,8 +637,8 @@ def Bilan1_catalogue(conso_perso, profil, perso, territ, surface, installation, 
 
     # Tous ce qui est util :
     Inaction = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, NbrekWhfacture, Recurrencefacture,
-                                      Montantfacture, Nbreetages, type, batteries=False, centrale_autoprod=False,
-                                      centrale_entrelesdeux=False)[3]
+                                      Montantfacture, Nbreetages, type, False, False,
+                                      False, id_enseigne)[3]
 
     Mobilite_1an = Vehicule_thermique_annuel(
         NbreVS, NbkmanVS, NbreVU, NbkmanVU)[4]
