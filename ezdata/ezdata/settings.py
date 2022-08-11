@@ -165,3 +165,6 @@ LOGIN_URL = 'login'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'users.MyUser'
+
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True

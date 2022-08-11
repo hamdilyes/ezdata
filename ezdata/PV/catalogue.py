@@ -534,8 +534,18 @@ def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installa
         NbrekWhfacture, Recurrencefacture, Montantfacture, surface, Nbreetages, type)[2]
 
     # taille de la centrale
-    centrale_GT = solution_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
-                                     centrale_entrelesdeux).taille
+    sol = solution_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
+                             centrale_entrelesdeux)
+
+    rqt1 = Enseigne.objects.get(id=id_enseigne)
+    rqt2 = Batiment.objects.filter(enseigne=rqt1).filter(num_sites=1)[0]
+    if CentraleBatiment.objects.filter(batiment=rqt2).exists():
+        cb = CentraleBatiment.objects.get(batiment=rqt2)
+        if SolutionBatiment.objects.filter(centrale_batiment=cb).exists():
+            x = SolutionBatiment.objects.get(centrale_batiment=cb)
+            sol = x.solution
+
+    centrale_GT = sol.taille
 
     # € / kWh
     if centrale_GT < 9:
@@ -549,8 +559,6 @@ def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installa
     surplus_annuel = calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface, installation, puissance, batteries, centrale_autoprod,
                                                       centrale_entrelesdeux, id_enseigne)[4]
     revente_surplus = round(surplus_annuel*prix_vente, 2)
-
-    print(surplus_annuel)
 
     difference = [0] * 20
     for i in range(20):

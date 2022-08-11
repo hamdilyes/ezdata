@@ -5,14 +5,11 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import transaction
 from django.contrib import messages
-
 from .catalogue import *
 from .custom_centrale import *
-
 from .solutions import *
 from .forms import *
 from .models import *
-
 from .dimens_centrale import *
 import numpy as np
 from .facturation import *
@@ -21,8 +18,9 @@ from .mobilite import *
 from .models import *
 from .Bilan_final import *
 from .catalogue import *
-
+from .sele2 import *
 from .gps import *
+from .esco import *
 
 # importing the necessary libraries
 from django.template.loader import get_template
@@ -886,14 +884,14 @@ def results_catalogue(request, id_enseigne):
     # Mise à jour de la valeur du site
 
     rqt2 = Batiment.objects.filter(enseigne=rqt1).filter(num_sites=site)[0]
-
-    # rqt2 --> Objet : Bâtiment
-
-    # Pour plusieurs sites : différents résultats
+    nb_etages = rqt2.nb_etages
+    type = rqt2.type_batiment
+    nb_batiments = rqt2.nb_batiment
 
     # Resultats pour 1 Bâtiment
     rqt3 = Localisation.objects.get(batiment=rqt2)
     territ = rqt3.territ
+    stlucia = territ.territ == "Saint Lucia"
 
     rqt4 = Profil.objects.get(batiment=rqt2)
     profil = rqt4.type_profil
@@ -910,6 +908,7 @@ def results_catalogue(request, id_enseigne):
     puissance = rqt6.puissance
     Nb_kW = rqt6.nb_kW
     ref = rqt6.reference
+    fact = rqt6.facture
 
     rqt7 = Electrification.objects.get(souscription=rqt6)
     installation = rqt7.installation
@@ -1013,12 +1012,62 @@ def results_catalogue(request, id_enseigne):
                                                  installation, puissance, etat_batterie, etat_AutoProd, etat_entre_deux, id_enseigne)[2]
     auto_prod = round(auto_prod, 2)
 
+    #
+    prod_pv_an = taille*rqt3.territ.Ep_moyenne  # kWh/an
+
+    #
     alerte_kVA = taille > puissance
 
     alerte_surface = surface_totale > surface1
 
     gt = round(dimensionnement_potentiel_centrale_autoconso(
         conso_perso, profil, perso, territ), 2)
+
+    # inaction vs prix totaux MCO / ESCO
+    conso_an = Variables_mde(
+        Nb_kW, ref, fact, surface1, nb_etages)[2]
+    tab_prix_elec = Coeffs_mde(
+        Nb_kW, ref, fact, surface1, nb_etages, type)[2]
+
+    # investissement pv
+    test = ItemQuantite.objects.filter(catalogue_solution=sol)
+    p4 = sum([x.prix for x in test])
+    invest = round(p4, 2)
+
+    # surplus
+    revente_surplus_moy = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface1, installation, puissance, Nb_kW, ref, fact, nb_etages, type, False, False,
+                                                 False, id_enseigne)[4]
+    surplus = revente_surplus_moy*20
+    surplus = round(surplus, 2)
+
+    # gains mco vs esco
+    eco_pv = Economies_pv_catalogue(conso_perso, profil, perso, territ, surface1, installation, puissance, Nb_kW,
+                                    ref, fact, nb_etages, type, False, False, False, id_enseigne)[0][2]*nb_batiments
+    gains_mco = eco_pv-invest
+
+    gains_mco_pos = gains_mco > 0
+
+    gains_esco = esco(surface1, Nb_kW, ref, fact, nb_etages,
+                      type, invest, taille, surplus, auto_conso, auto_prod, prod_pv_an)[0]
+
+    gains_esco_pos = gains_esco > 0
+
+    reduc_esco_10 = esco(surface1, Nb_kW, ref, fact, nb_etages,
+                         type, invest, taille, surplus, auto_conso, auto_prod, prod_pv_an)[1]
+    reduc_esco_20 = esco(surface1, Nb_kW, ref, fact, nb_etages,
+                         type, invest, taille, surplus, auto_conso, auto_prod, prod_pv_an)[2]
+
+    gains_mco = round(gains_mco, 2)
+    gains_esco = round(gains_esco, 2)
+
+    exportsite.gains_sans_esco = gains_mco
+    exportsite.gains_esco = gains_esco
+    exportsite.reduc_esco_10 = reduc_esco_10
+    exportsite.reduc_esco_20 = reduc_esco_20
+
+    inaction = round(sum([conso_an*tab_prix_elec[i] for i in range(20)]), 2)
+    prix_mco = round(inaction-gains_mco, 2)
+    prix_esco = round(inaction-gains_esco, 2)
 
     exportsite.save()
 
@@ -1028,7 +1077,7 @@ def results_catalogue(request, id_enseigne):
         return HttpResponseRedirect(url)
 
     return render(request, 'dashboard_2.html',
-                  {'alerte_surface': alerte_surface, 'puissance': puissance, 'alerte_kVA': alerte_kVA, 'gt': gt, 'id_enseigne': id_enseigne, 'site': site, 'nb': range_nb, 'taille': taille, 'nb_modules': nbr_modules, 'surface': surface_totale,
+                  {'reduc_esco_10': reduc_esco_10, 'reduc_esco_20': reduc_esco_20, 'inaction': inaction, 'prix_mco': prix_mco, 'prix_esco': prix_esco, 'stlucia': stlucia, 'surplus': surplus, 'gains_esco': gains_esco, 'gains_mco': gains_mco, 'gains_mco_pos': gains_mco_pos, 'gains_esco_pos': gains_esco_pos, 'invest': invest, 'alerte_surface': alerte_surface, 'puissance': puissance, 'alerte_kVA': alerte_kVA, 'gt': gt, 'id_enseigne': id_enseigne, 'site': site, 'nb': range_nb, 'taille': taille, 'nb_modules': nbr_modules, 'surface': surface_totale,
                    'graph1': out, 'graph2': out1, 'graph3': surface_graph, 'EDF': conso_reseau, 'graph4': out2,
                    'graph5': surface_graph1, 'EDF_1': conso_reseau_weekend, 'surface1': surface1, 'autoconso': auto_conso,
                    'autoprod': auto_prod})
@@ -1498,11 +1547,6 @@ def bilan_catalogue(request, id_enseigne):
 
     if 'Précédent' in request.POST:
         url = reverse('mobilite', kwargs={'id_enseigne': id_enseigne})
-
-        return HttpResponseRedirect(url)
-
-    if 'multi-sites' in request.POST:
-        url = reverse('multi-sites', kwargs={'id_enseigne': id_enseigne})
 
         return HttpResponseRedirect(url)
 

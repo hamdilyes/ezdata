@@ -56,7 +56,6 @@
 
 {% block content %}
 {% load static %}
-{% load humanize %}
 <!-- End Navbar -->
 <div class="content">
   {% if alerte_kVA or alerte_surface %}
@@ -84,58 +83,144 @@
   {% endif %}
 
   <div class="container">
-    <div class="row">
-      <div class="col-md-4 mr-auto ml-auto">
-        <div class="card card-stats">
-          <div class="card-body ">
-            <div class="row">
-              <div class="col-5 col-md-4">
-                <div class="icon-big text-center icon-warning">
-                  <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+    <div class="col-md-12 mr-auto ml-auto">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">
+            Dimensionnement
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body ">
+                  <div class="row">
+                    <div class="col-5 col-md-4">
+                      <div class="icon-big text-center icon-warning">
+                        <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+                      </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                      <div class="numbers">
+                        <p class="card-category"><small>Taille idéale : {{ gt }}</small></p>
+                        <p class="card-title"><small>{{ taille }} kWc</small></p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-7 col-md-8">
-                <div class="numbers">
-                  <p class="card-category"><small>Taille idéale : {{ gt }}</small></p>
-                  <p class="card-title"><small>{{ taille }} kWc</small></p>
+            </div>
+            <div class="col-md-4 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body ">
+                  <div class="row">
+                    <div class="col-5 col-md-4">
+                      <div class="icon-big text-center icon-warning">
+                        <i class="nc-icon nc-layout-11 text-success"></i>
+                      </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                      <div class="numbers">
+                        <p class="card-category">Modules</p>
+                        <p class="card-title">{{ nb_modules }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body ">
+                  <div class="row">
+                    <div class="col-5 col-md-4">
+                      <div class="icon-big text-center icon-warning">
+                        <i class="nc-icon nc-settings text-danger"></i>
+                      </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                      <div class="numbers">
+                        <p class="card-category">Surface</p>
+                        <p class="card-title"><small><small>{{ surface }} m²</small></small></p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="col-md-4 mr-auto ml-auto">
-        <div class="card card-stats">
-          <div class="card-body ">
+
+          <form method="POST">
+            {% csrf_token %}
             <div class="row">
-              <div class="col-5 col-md-4">
-                <div class="icon-big text-center icon-warning">
-                  <i class="nc-icon nc-layout-11 text-success"></i>
-                </div>
+              <div class="col-md-2 offset-3">
+                <input type='submit' class='btn btn-danger btn-wd' name='Plus' value='+' />
               </div>
-              <div class="col-7 col-md-8">
-                <div class="numbers">
-                  <p class="card-category">Modules</p>
-                  <p class="card-title">{{ nb_modules }}</p>
+              <div class="col-md-2">
+                <input type='submit' class='btn btn-primary btn-wd' name='Reset' value='MODE AUTO' />
+              </div>
+              <div class="col-md-2">
+                <input type='submit' class='btn btn-warning btn-wd' name='Moins' value='-' />
+              </div>
+            </div>
+          </form>
+
+          <div class="row">
+            <div class="col-md-4 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body ">
+                  <div class="row">
+                    <div class="col-5 col-md-4">
+                      <div class="icon-big text-center icon-warning">
+                        <i class="nc-icon nc-ruler-pencil text-warning"></i>
+                      </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                      <div class="numbers">
+                        <p class="card-category"><small>Autoconsommation</small></p>
+                        <p class="card-title">{{ autoconso }} %</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mr-auto ml-auto">
-        <div class="card card-stats">
-          <div class="card-body ">
-            <div class="row">
-              <div class="col-5 col-md-4">
-                <div class="icon-big text-center icon-warning">
-                  <i class="nc-icon nc-settings text-danger"></i>
+            <div class="col-md-4 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body ">
+                  <div class="row">
+                    <div class="col-5 col-md-4">
+                      <div class="icon-big text-center icon-warning">
+                        <i class="nc-icon nc-bank text-primary"></i>
+                      </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                      <div class="numbers">
+                        <p class="card-category">ESCO</p>
+                        <p class="card-title">{{ reduc_esco_10 }} % - {{ reduc_esco_20 }} %</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-7 col-md-8">
-                <div class="numbers">
-                  <p class="card-category">Surface</p>
-                  <p class="card-title"><small><small>{{ surface }} m²</small></small></p>
+            </div>
+            <div class="col-md-4 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body ">
+                  <div class="row">
+                    <div class="col-5 col-md-4">
+                      <div class="icon-big text-center icon-warning">
+                        <i class="nc-icon nc-bullet-list-67 text-danger"></i>
+                      </div>
+                    </div>
+                    <div class="col-7 col-md-8">
+                      <div class="numbers">
+                        <p class="card-category"><small>Autoproduction</small></p>
+                        <p class="card-title">{{ autoprod }} %</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -144,58 +229,124 @@
       </div>
     </div>
 
-    <form method="POST">
-      {% csrf_token %}
-      <div class="row">
-        <div class="col-md-2 mr-auto ml-auto">
-          <input type='submit' class='btn btn-danger btn-wd' name='Plus' value='+' />
-        </div>
-        <div class="col-md-2 mr-auto ml-auto">
-          <input type='submit' class='btn btn-primary btn-wd' name='Reset' value='MODE AUTO' />
-        </div>
-        <div class="col-md-2 mr-auto ml-auto">
-          <input type='submit' class='btn btn-warning btn-wd' name='Moins' value='-' />
-        </div>
-      </div>
-    </form>
 
-    <div class="row">
-      <div class="col-md-4 mr-auto ml-auto">
-        <div class="card card-stats">
-          <div class="card-body ">
-            <div class="row">
-              <div class="col-5 col-md-4">
-                <div class="icon-big text-center icon-warning">
-                  <i class="nc-icon nc-sun-fog-29 text-warning"></i>
-                </div>
-              </div>
-              <div class="col-7 col-md-8">
-                <div class="numbers">
-                  <p class="card-category"><small>Autoconsommation</small></p>
-                  <p class="card-title">{{ autoconso }} %</p>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">
+            Financement
+          </h5>
         </div>
-      </div>
-      <div class="col-md-4 mr-auto ml-auto">
-        <div class="card card-stats">
-          <div class="card-body ">
-            <div class="row">
-              <div class="col-5 col-md-4">
-                <div class="icon-big text-center icon-warning">
-                  <i class="nc-icon nc-layout-11 text-success"></i>
+        <div class="card-body">
+
+          <div class="row">
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-header ">
+                  <center>
+                    <h5 class="card-title">Autoconsommation MCO</h5>
+                  </center>
                 </div>
               </div>
-              <div class="col-7 col-md-8">
-                <div class="numbers">
-                  <p class="card-category"><small>Autoproduction</small></p>
-                  <p class="card-title">{{ autoprod }} %</p>
+            </div>
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-header ">
+                  <center>
+                    <h5 class="card-title">ESCO</h5>
+                  </center>
                 </div>
               </div>
             </div>
           </div>
+
+          <h3 class="card-category">Bilan 20 ans</h3>
+          <div class="row">
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <center>
+                    <h5 style="color:olive"><B>
+                        {% if gains_mco_pos %}
+                        +
+                        {% endif %}
+                        {{ gains_mco }} €</B></h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <center>
+                    <h5 style="color:olive"><B>
+                        {% if gains_esco_pos %}
+                        +
+                        {% endif %}
+                        {{ gains_esco }} €</B></h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="card-category">Investissement</h3>
+          <div class="row">
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <center>
+                    <h5>{{ invest }} €</h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <center>
+                    <h5> 0.00 € </h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="card-category">Coût total sans action</h3>
+          <div class="row">
+            <div class="col-md-6 offset-3">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <center>
+                    <h5>{{ inaction }} €</h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="card-category">Coût total avec action</h3>
+          <div class="row">
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <center>
+                    <h5>{{ prix_mco }} €</h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5 mr-auto ml-auto">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <center>
+                    <h5> {{ prix_esco }} € </h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -373,31 +524,6 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card card-stats">
-
-          <div class="card-header ">
-            <h5 class="card-body">Autoconsommation</h5>
-            <p class="card-body"><B>Consommer l'électricité produite. </B></p>
-            <p class="card-body"> Vous consommez directement <B> {{ autoconso }} % </B> de l'électricité que produit
-              la
-              centrale photovoltaïque sur une année.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card card-stats">
-          <div class="card-header">
-            <h5 class="card-body">Autoproduction</h5>
-            <p class="card-body"><B>Produire l'électricité consommée. </B> </p>
-            <p class="card-body">La centrale photovoltaïque produit <B>{{ autoprod }} %</B> de votre consommation
-              annuelle d'électricité.</p>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-
 </div>
 {% endblock %}
