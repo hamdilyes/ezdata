@@ -961,7 +961,10 @@ class BDDBat(models.Model):
 class Emisission_CO2(models.Model):
     territ = models.CharField(max_length=100, verbose_name="Territoire")
     emission = models.FloatField(
-        verbose_name="Hypothèses Emissions CO2 en kg CO2/kWh	")
+        verbose_name="Hypothèses Emissions CO2 en kg CO2/kWh")
+
+    class Meta:
+        verbose_name = "Z.Hyp : Emissions CO2"
 
 
 class Hyp_cout_mobilite(models.Model):
@@ -970,7 +973,7 @@ class Hyp_cout_mobilite(models.Model):
     unite = models.CharField(max_length=100, verbose_name="Unité")
 
     class Meta:
-        verbose_name = "Coût Mobilité"
+        verbose_name = "Z.Hyp : Coût Mobilité"
 
 
 class EZ_DRIVE(models.Model):
@@ -979,3 +982,6 @@ class EZ_DRIVE(models.Model):
     unite = models.CharField(max_length=100, verbose_name="Unité")
     invest = models.FloatField(
         verbose_name="Investissement initial en €", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Z.Hyp : EzDrive"

@@ -314,6 +314,13 @@ def calcul_taux_centraleGT_catalogue(conso_perso, profil, perso, territ, surface
 
     centrale_GT = sol.taille
 
+    CentraleBatiment.objects.filter(batiment=rqt2).delete()
+    cb = CentraleBatiment(batiment=rqt2)
+    cb.save()
+    SolutionBatiment.objects.filter(centrale_batiment=cb).delete()
+    x = SolutionBatiment(centrale_batiment=cb, solution=sol)
+    x.save()
+
     # ATTENTION
     # Batterie en kWh dans les params
 
@@ -546,6 +553,13 @@ def Economies_pv_catalogue(conso_perso, profil, perso, territ, surface, installa
             sol = x.solution
 
     centrale_GT = sol.taille
+
+    CentraleBatiment.objects.filter(batiment=rqt2).delete()
+    cb = CentraleBatiment(batiment=rqt2)
+    cb.save()
+    SolutionBatiment.objects.filter(centrale_batiment=cb).delete()
+    x = SolutionBatiment(centrale_batiment=cb, solution=sol)
+    x.save()
 
     # € / kWh
     if centrale_GT < 9:

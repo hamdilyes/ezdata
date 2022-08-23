@@ -18,7 +18,6 @@ from .mobilite import *
 from .models import *
 from .Bilan_final import *
 from .catalogue import *
-from .sele2 import *
 from .gps import *
 from .esco import *
 
@@ -1052,10 +1051,13 @@ def results_catalogue(request, id_enseigne):
 
     gains_esco_pos = gains_esco > 0
 
-    reduc_esco_10 = esco(surface1, Nb_kW, ref, fact, nb_etages,
-                         type, invest, taille, surplus, auto_conso, auto_prod, prod_pv_an)[1]
-    reduc_esco_20 = esco(surface1, Nb_kW, ref, fact, nb_etages,
-                         type, invest, taille, surplus, auto_conso, auto_prod, prod_pv_an)[2]
+    # reduc_esco_10 = esco(surface1, Nb_kW, ref, fact, nb_etages,
+    #                      type, invest, taille, surplus, auto_conso, auto_prod, prod_pv_an)[1]
+    # reduc_esco_20 = esco(surface1, Nb_kW, ref, fact, nb_etages,
+    #                      type, invest, taille, surplus, auto_conso, auto_prod, prod_pv_an)[2]
+
+    reduc_esco_10 = 10
+    reduc_esco_20 = 10
 
     gains_mco = round(gains_mco, 2)
     gains_esco = round(gains_esco, 2)
@@ -1145,6 +1147,13 @@ def factu_catalogue(request, id_enseigne):
         if SolutionBatiment.objects.filter(centrale_batiment=cb).exists():
             x = SolutionBatiment.objects.get(centrale_batiment=cb)
             sol = x.solution
+
+    CentraleBatiment.objects.filter(batiment=rqt2).delete()
+    cb = CentraleBatiment(batiment=rqt2)
+    cb.save()
+    SolutionBatiment.objects.filter(centrale_batiment=cb).delete()
+    x = SolutionBatiment(centrale_batiment=cb, solution=sol)
+    x.save()
 
     choices = FacturationItem.objects.filter(type="Module photovoltaïque")
     choices = [x for x in choices]
@@ -1765,7 +1774,7 @@ def multi_sites_catalogue(request, id_projet):
         cons_p = (cons_avant-cons_apres)/cons_avant*100
         cons_p = round(cons_p, 2)
 
-    return render(request, 'multi_sites.html', {'site': site, 'un': Economique_mde, 'deux': Economique_pv, 'trois': Economique_mobilite, 'quatre': Total_Economique,
+    return render(request, 'multi_sites.html', {'projet': projet, 'site': site, 'un': Economique_mde, 'deux': Economique_pv, 'trois': Economique_mobilite, 'quatre': Total_Economique,
                                                 'cinq': Environnement_mde, 'six': Environnement_pv, 'sept': Environnement_mobilite, 'huit': Total_Environnement,
                                                 'neuf': Energie_mde, 'dix': Energie_mobilite, 'onze': Total_Energie,
                                                 'Reduction_MDE': coeff_un, 'Reduction_PV': coeff_deux, 'Reduction_Mobilite': coeff_trois, 'Emission_20ans': emission_sans_action,

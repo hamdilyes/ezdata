@@ -14,9 +14,11 @@ def update_esco(invest, taille, cout, reduc_esco_10, reduc_esco_20, surplus, aut
 
     # taux d'autoconsommation
     taux_autoconso = auto_conso
+    print("taux_autoconso", taux_autoconso)
 
     # production PV annuelle
     prod_pv_an = prod_pv_an
+    print("prod_pv_an", prod_pv_an)
 
     # cout élec esco
     cout_esco = [0]*20
@@ -56,7 +58,7 @@ def update_esco(invest, taille, cout, reduc_esco_10, reduc_esco_20, surplus, aut
     calcul_tri_van[11] += -prix_onduleur
 
     # numéros de ligne dans onglet "Economics" de la Préconfig sous Excel
-    # 25, 30, 72, 87, 89, fonction VPM
+    # 25, 30, 72, 87, 89, fonction VPM = annuités
     for i in range(1, 21):
         v_25 = (surplus/20*65/100+cout_esco[i-1]-new_facture[i-1])/1000  # k€
         v_30 = taille*18/1000  # k€
@@ -72,15 +74,15 @@ def update_esco(invest, taille, cout, reduc_esco_10, reduc_esco_20, surplus, aut
     v_25 = (surplus/20*65/100+cout_esco[0]-new_facture[0])/1000  # k€
     v_30 = taille*18/1000  # k€
 
-    taux_1 = np.abs((v_25-v_30)/annuite)
-    taux_2 = np.abs(v_25/(v_30+annuite))
+    taux_1 = (v_25-v_30)/annuite
+    taux_2 = v_25/(v_30+annuite)
 
     return tri_financier, taux_1, taux_2, cout_esco
 
 
 def esco(surface, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages, type, invest, taille, surplus, auto_conso, autoprod, prod_pv_an):
-    reduc_esco_10 = int(autoprod)-1
-    reduc_esco_20 = int(autoprod)-1
+    reduc_esco_10 = 1
+    reduc_esco_20 = 1
     cout = [0]*20
 
     # kWh/an
@@ -102,7 +104,7 @@ def esco(surface, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages,
     tri_financier, taux_1, taux_2 = update_esco(
         invest, taille, cout, reduc_esco_10, reduc_esco_20, surplus, auto_conso, prod_pv_an, tab_prix_elec)[:3]
 
-    while taux_1 > 1.15 or taux_2 > 1.15:
+    while taux_1 > 1.15 and taux_2 > 1.15:
         if r1 < autoprod-1:
             r1 += 1
             reduc_esco_10 = r1
@@ -126,9 +128,6 @@ def esco(surface, NbrekWhfacture, Recurrencefacture, Montantfacture, Nbreetages,
             reduc_esco_10 = r1
             tri_financier, taux_1, taux_2 = update_esco(
                 invest, taille, cout, reduc_esco_10, reduc_esco_20, surplus, auto_conso, prod_pv_an, tab_prix_elec)[:3]
-
-    print("TRI", tri_financier, "TAUX", taux_1, taux_2,
-          "REDUC", reduc_esco_10, reduc_esco_20)
 
     cout_esco = update_esco(invest, taille, cout, reduc_esco_10,
                             reduc_esco_20, surplus, auto_conso, prod_pv_an, tab_prix_elec)[3]

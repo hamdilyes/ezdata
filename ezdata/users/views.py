@@ -13,7 +13,6 @@ from .forms import *
 from PV.models import *
 from .forms import *
 from PV.forms import *
-from PV.sele2 import *
 
 import xlwt
 import csv

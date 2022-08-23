@@ -311,9 +311,6 @@ class ClientAdmin(admin.ModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
 
-# # admin.site.register(Client,  ClientAdmin)
-
-
 class EnseigneAdmin(admin.ModelAdmin):
     list_display = ('name', "get_user", "id", "secteur")
 
@@ -353,9 +350,6 @@ class EnseigneAdmin(admin.ModelAdmin):
         extra_context['lien_sites'] = self.sites_link(object_id)
 
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
-
-
-# admin.site.register(Enseigne, EnseigneAdmin)
 
 
 class BatimentAdmin(admin.ModelAdmin):
@@ -473,15 +467,9 @@ class BatimentAdmin(admin.ModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
 
-# admin.site.register(Batiment, BatimentAdmin)
-
-
 class LocalisationAdmin(admin.ModelAdmin):
 
     change_form_template = 'admin/change_form_coeffs.html'
-
-
-# admin.site.register(Localisation, LocalisationAdmin)
 
 
 class ProfilAdmin(admin.ModelAdmin):
@@ -489,15 +477,9 @@ class ProfilAdmin(admin.ModelAdmin):
     change_form_template = 'admin/change_form_coeffs.html'
 
 
-# admin.site.register(Profil, ProfilAdmin)
-
-
 class ToitureAdmin(admin.ModelAdmin):
 
     change_form_template = 'admin/change_form_coeffs.html'
-
-
-# admin.site.register(Toiture, ToitureAdmin)
 
 
 class EDFAdmin(admin.ModelAdmin):
@@ -505,15 +487,9 @@ class EDFAdmin(admin.ModelAdmin):
     change_form_template = 'admin/change_form_coeffs.html'
 
 
-# admin.site.register(EDF, EDFAdmin)
-
-
 class ElectrificationAdmin(admin.ModelAdmin):
 
     change_form_template = 'admin/change_form_coeffs.html'
-
-
-# admin.site.register(Electrification, ElectrificationAdmin)
 
 
 class MobiliteAdmin(admin.ModelAdmin):
@@ -521,22 +497,10 @@ class MobiliteAdmin(admin.ModelAdmin):
     change_form_template = 'admin/change_form_coeffs.html'
 
 
-# admin.site.register(Mobilite, MobiliteAdmin)
-
-# admin.site.register(Taxe)
-
-
-# # admin.site.register(BDD)
-
-# @admin.register(BDD)
-
 class BDDAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ["N", "Onduleur_1", "Batterie_1", "Nombre_Batterie_1", "Onduleur_2", "Batterie_2", "Nombre_Batterie_2", "Onduleur_3",
                     "Module_batterie_1", "Module_batterie_2", "Electrical_installation", "Nb_modules_min", "Puissance_centrale_max", "Capacit_batterie",
                     "Prix_total_achat"]
-
-
-# admin.site.register(BDD, BDDAdmin)
 
 
 class OnduleursAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -544,9 +508,6 @@ class OnduleursAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     "cout",	"install", "tension", "puissance_dc", "puissance_ac"]
 
     change_form_template = 'admin/change_form_coeffs.html'
-
-
-# admin.site.register(Onduleurs, OnduleursAdmin)
 
 
 class ModulesPVAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -627,9 +588,6 @@ class Coeffs_OuvresAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     get_profil.short_description = 'Profil'  # Renames column head
 
 
-# admin.site.register(Coeffs_Ouvres, Coeffs_OuvresAdmin)
-
-
 class Coeffs_WeekendAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ["get_profil", "heure", "coeff"]
 
@@ -640,9 +598,6 @@ class Coeffs_WeekendAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     get_profil.admin_order_field = 'Profil_Weekend'  # Allows column order sorting
     get_profil.short_description = 'Profil'  # Renames column head
-
-
-# admin.site.register(Coeffs_Weekend, Coeffs_WeekendAdmin)
 
 
 class Coeffs_Ouvres(admin.StackedInline):
@@ -832,10 +787,9 @@ admin.site.register(Profil_types, Profil_typesAdmin)
 
 admin.site.register(CatalogueSolution, CatalogueSolutionAdmin)
 admin.site.register(FacturationItem, FacturationItemAdmin)
-admin.site.register(ItemQuantite, ItemQuantiteAdmin)
+# admin.site.register(ItemQuantite, ItemQuantiteAdmin)
 
 admin.site.register(Ensolleilement)
-admin.site.register(ModulesPV, ModulesPVAdmin)
 
 admin.site.register(Projet, ProjetAdmin)
 admin.site.register(Enseigne, EnseigneAdmin)
@@ -844,24 +798,11 @@ admin.site.register(Enseigne, EnseigneAdmin)
 
 admin.site.register(CourbeChargePerso)
 admin.site.register(ProfilPerso)
-admin.site.register(ExportSite)
+# admin.site.register(ExportSite)
 admin.site.register(ProfilTypesPerso)
 
 # # # # #
 
-# # admin.site.register(Main_doeuvre, Main_doeuvreAdmin)
-# # admin.site.register(Tableaux, TableauxAdmin)
-# # admin.site.register(Cables, CablesAdmin)
-# # admin.site.register(Cheminement, CheminementAdmin)
-# # admin.site.register(Divers, DiversAdmin)
-# # admin.site.register(Inge, IngeAdmin)
-# # admin.site.register(Structure, StructureAdmin)
-# # admin.site.register(BDDBat, BDDBatAdmin)
-# # admin.site.register(Emisission_CO2, Emisission_CO2Admin)
-# # admin.site.register(Hyp_cout_mobilite, Hyp_cout_mobiliteAdmin)
-# admin. site.register(EZ_DRIVE, EZ_DRIVEAdmin)
-
-# # admin.site.register(Monitoring, MonitoringAdmin)
-# # admin.site.register(Tailles_Standards, Tailles_StandardAdmin)
-# # admin.site.register(Batteries, BatterieAdmin)
-# # admin.site.register(Extensions_Batteries, Extensions_BatteriesAdmin)
+admin.site.register(Emisission_CO2, Emisission_CO2Admin)
+admin.site.register(Hyp_cout_mobilite, Hyp_cout_mobiliteAdmin)
+admin. site.register(EZ_DRIVE, EZ_DRIVEAdmin)
