@@ -21,7 +21,7 @@ def test_virta():
     login_button = driver.find_element(by=By.ID, value="btn")
 
     username.send_keys("greentechnologie")
-    password.send_keys("rjF7FF5vJw6b")
+    # password should be here
     login_button.click()
 
     WebDriverWait(driver, timeout=30).until(lambda d:
